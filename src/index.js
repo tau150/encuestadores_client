@@ -1,36 +1,51 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
-import thunk from 'redux-thunk';
-import './index.css';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
+import React from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter, HashRouter } from "react-router-dom";
+import { createBrowserHistory } from "history";
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware, compose, combineReducers } from "redux";
+import { connectRouter, routerMiddleware } from "connected-react-router";
+import { ConnectedRouter } from "connected-react-router";
 
-// import redecerName from './store/reducers/reducerName';
-
-
-
+import thunk from "redux-thunk";
+import App from "./App";
+import authReducer from "./store/reducers/authReducer";
+import usersReducer from "./store/reducers/usersReducer";
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
+const history = createBrowserHistory();
+
 const rootReducer = combineReducers({
-    // reducerName: redecerName,
-})
+  auth: authReducer,
+  users: usersReducer
+});
 
-
-const store = createStore( rootReducer, composeEnhancers( 
-    applyMiddleware(thunk)
-));
-
-const app = (
-    <Provider store={store}>
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>    
-    </Provider>
+const store = createStore(
+  connectRouter(history)(rootReducer), // new root reducer with router state
+  compose(
+    applyMiddleware(
+      routerMiddleware(history),
+      thunk // for dispatching history actions
+      // ... other middlewares ...
+    )
+  )
 );
 
-ReactDOM.render( app, document.getElementById( 'root' ) );
-registerServiceWorker();
+// const store = createStore(
+//   rootReducer,
+//   composeEnhancers(applyMiddleware(thunk))
+// );
+
+const app = (
+  <Provider store={store}>
+    <ConnectedRouter history={history}>
+      <HashRouter>
+        <App />
+      </HashRouter>
+    </ConnectedRouter>
+  </Provider>
+);
+
+ReactDOM.render(app, document.getElementById("root"));
+// registerServiceWorker();
