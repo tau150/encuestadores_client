@@ -23,26 +23,30 @@ const StyledLoading = styled.div`
   animation: spinner 0.6s linear infinite;
 `;
 
+const StyledBackDrop = styled.div`
+  background: rgba(0, 0, 0, 0.2);
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 4000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const Loading = ({ open }) => {
-  return (
-    <h1>LOADING</h1>
-    // <div>
-    //   <Dialog
-    //     open={open}
-    //     aria-labelledby="alert-dialog-title"
-    //     aria-describedby="alert-dialog-description"
-    //   >
-    //     <DialogContent>
-    //       <DialogContentText
-    //         className="container-loading"
-    //         id="alert-dialog-description"
-    //       />
-    //       <StyledLoading />
-    //       <h5>Cargando... </h5>
-    //     </DialogContent>
-    //   </Dialog>
-    // </div>
-  );
+  const loading = open ? (
+    <StyledBackDrop>
+      <div>
+        <StyledLoading />
+        <h5>Cargando... </h5>
+      </div>
+    </StyledBackDrop>
+  ) : null;
+
+  return <div>{loading}</div>;
 };
 
 export default Loading;

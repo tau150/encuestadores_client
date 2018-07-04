@@ -1,33 +1,43 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 
 const StyledDiv = styled.div`
-  width: 70%;
+  width: 80%;
   margin: 20px auto;
-  display: flex;
-  padding: 15px;
-  cursor: pointer;
+  border-radius: 5px;
   justify-content: center;
   align-items: center;
-  color: #3c4858;
   &:hover {
     background: #e7e9ea;
     transition: all 0.3s linear;
   }
-
   a {
     text-decoration: none;
     color: #3c4858;
-    margin-left: 15px;
+
+    i {
+      margin-right: 15px;
+    }
+  }
+
+  .link {
+    display: flex;
+    padding: 15px;
+    cursor: pointer;
+    margin-left: 0;
+    color: #3c4858;
+    border-radius: 5px;
   }
 `;
 
 const SidebarLink = props => {
   return (
     <StyledDiv>
-      <i className="material-icons">{props.icon}</i>
-      <Link to={props.path}>{props.pathName}</Link>
+      <NavLink to={props.path} className="link" activeClassName="active-link">
+        <i className="material-icons">{props.icon}</i>
+        {props.pathName}
+      </NavLink>
     </StyledDiv>
   );
 };

@@ -57,6 +57,7 @@ export const logout = () => {
   localStorage.removeItem("expiresIn");
   localStorage.removeItem("userId");
   localStorage.removeItem("userEmail");
+
   return {
     type: AUTH_LOGOUT
   };

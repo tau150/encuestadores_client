@@ -67,6 +67,10 @@ class Login extends Component {
 
   state = { email: "", password: "", withError: false };
 
+  componentDidMount() {
+    console.log(this.props);
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.error) {
       notify.show(nextProps.error, "error", 2000);
@@ -95,6 +99,7 @@ class Login extends Component {
   render() {
     return (
       <StyledDiv>
+        <Loading open={this.props.loading} />
         <Card className="card">
           <CardBody className="cardBody">
             <CardTitle className="cardTitle text-bold">

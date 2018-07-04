@@ -4,9 +4,11 @@ import { connect } from "react-redux";
 import Login from "./containers/Login";
 import Home from "./components/Home";
 import Test from "./components/Test";
-import { authCheckState } from "./store/actions/authActions";
-import Layout from "./hoc/Layout";
+import { authCheckState, logout } from "./store/actions/authActions";
+import LayoutSimple from "./components/LayoutSimple";
+// import Layout from "./hoc/Layout";
 // import UsersIndex from "./containers/UsersIndex";
+
 import Notifications, { notify } from "react-notify-toast";
 
 class App extends Component {
@@ -14,13 +16,12 @@ class App extends Component {
     this.props.authCheckState();
   }
 
+  handleLogout = () => {
+    this.props.logout();
+  };
+
   render() {
     let routes;
-
-    const home = Layout(Home);
-
-    const test = Layout(Test);
-    // const usersIndex = Layout(UsersIndex);
 
     if (!this.props.isAuthenticated) {
       routes = (
@@ -29,11 +30,14 @@ class App extends Component {
           <Redirect to="/login" />
         </Switch>
       );
+
+      layout = null;
     } else if (this.props.isAuthenticated && this.props.user.role_id === 1) {
       routes = (
         <Switch>
           {/* <Route path="/users" component={usersIndex} /> */}
-          <Route path="/" exact component={home} />
+          <Route path="/" exact component={Home} />
+          <Route path="/usuarios" exact component={Home} />
           <Redirect to="/" />
         </Switch>
       );
@@ -41,16 +45,27 @@ class App extends Component {
       routes = (
         <Switch>
           <Route path="/test" component={test} />
-          <Route path="/" exact component={home} />
+          <Route path="/" exact component={Home} />
           <Redirect to="/" />
         </Switch>
       );
     }
 
+    let layout = this.props.isAuthenticated ? (
+      <LayoutSimple
+        userName={localStorage.getItem("userEmail")}
+        logout={this.handleLogout}
+      >
+        {routes}
+      </LayoutSimple>
+    ) : (
+      <div>{routes}</div>
+    );
+
     return (
       <div>
         <Notifications options={{ zIndex: 200 }} />
-        {routes}
+        {layout}
       </div>
     );
   }
@@ -66,6 +81,6 @@ const mapStateToProps = state => {
 export default withRouter(
   connect(
     mapStateToProps,
-    { authCheckState }
+    { authCheckState, logout }
   )(App)
 );

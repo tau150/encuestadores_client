@@ -15,7 +15,7 @@ import {
 } from "reactstrap";
 
 const Layout = WrappedComponent => {
-  class HOC extends Component {
+  return class HOC extends Component {
     state = {
       isOpen: false
     };
@@ -32,7 +32,7 @@ const Layout = WrappedComponent => {
             <div className="row">
               <div className="sidebar col-2">
                 <h5 className="text-center m-5">DPE</h5>
-                <div class="dropdown-divider" />
+                <div className="dropdown-divider" />
                 <SidebarLink
                   icon={"check_circle"}
                   pathName={"Usuarios"}
@@ -73,9 +73,9 @@ const Layout = WrappedComponent => {
         </div>
       );
     }
-  }
+  };
 
-  return HOC;
+  return this.HOC;
 };
 
 export default Layout;
