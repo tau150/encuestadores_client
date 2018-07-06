@@ -11,7 +11,7 @@ const usersReducer = (state = initialState, action) => {
       return { ...state, users: action.users };
 
     case GET_USERS_FAIL:
-      return { ...state, error: action.erro };
+      return { ...state, error: action.error };
 
     default:
       return state;

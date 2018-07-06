@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter, HashRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware, compose, combineReducers } from "redux";
@@ -11,14 +11,15 @@ import thunk from "redux-thunk";
 import App from "./App";
 import authReducer from "./store/reducers/authReducer";
 import usersReducer from "./store/reducers/usersReducer";
-
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+import notificationsReducer from "./store/reducers/notificationsReducer";
+// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const history = createBrowserHistory();
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  users: usersReducer
+  users: usersReducer,
+  notifications: notificationsReducer
 });
 
 const store = createStore(

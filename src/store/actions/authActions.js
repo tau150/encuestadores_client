@@ -1,5 +1,5 @@
 import axiosInstance from "../../axios";
-import axios from "axios";
+import { notification, loading, cleanLoading } from "./notificationsActions";
 
 export const AUTH_START = "AUTH_START";
 export const AUTH_SUCCESS = "AUTH_SUCCESS";
@@ -22,16 +22,13 @@ export const authSuccess = (token, user) => {
 
 export const authFail = error => {
   return {
-    type: AUTH_FAIL,
-    error: error
+    type: AUTH_FAIL
   };
 };
 
 export const login = (email, password) => {
-  console.log("action");
   return dispatch => {
-    dispatch(authStart());
-
+    dispatch(loading());
     const authData = {
       email: email,
       password: password
@@ -43,11 +40,15 @@ export const login = (email, password) => {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("expiresIn", Date.now() + response.data.expiresIn);
         localStorage.setItem("userId", response.data.user.id);
+        localStorage.setItem("roleId", response.data.user.role_id);
         localStorage.setItem("userEmail", response.data.user.email);
         dispatch(authSuccess(response.data.token, response.data.user));
+        dispatch(cleanLoading());
+        dispatch(notification("Logueado con éxito", false));
       })
       .catch(err => {
-        dispatch(authFail(err.response.data.error));
+        dispatch(notification(err.response.data.error, true));
+        dispatch(authFail());
       });
   };
 };
@@ -57,7 +58,7 @@ export const logout = () => {
   localStorage.removeItem("expiresIn");
   localStorage.removeItem("userId");
   localStorage.removeItem("userEmail");
-
+  localStorage.removeItem("roleId");
   return {
     type: AUTH_LOGOUT
   };
@@ -76,20 +77,17 @@ export const authCheckState = () => {
   return dispatch => {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
-
     if (!token) {
       return dispatch(logout());
     }
 
-    let config = {
-      headers: {
-        Authorization: token
-      }
-    };
-
-    axiosInstance.get(`/users/${userId}`).then(response => {
-      dispatch(checkAuthTimeout());
-      dispatch(authSuccess(token, response.data.user));
-    });
+    axiosInstance
+      .get(`/users/${userId}`, {
+        headers: { Authorization: localStorage.getItem("token") }
+      })
+      .then(response => {
+        dispatch(checkAuthTimeout());
+        dispatch(authSuccess(token, response.data.user));
+      });
   };
 };

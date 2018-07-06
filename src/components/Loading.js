@@ -26,10 +26,8 @@ const StyledLoading = styled.div`
 const StyledBackDrop = styled.div`
   background: rgba(0, 0, 0, 0.2);
   position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
+  width: 100vw;
+  height: 100vh;
   z-index: 4000;
   display: flex;
   align-items: center;

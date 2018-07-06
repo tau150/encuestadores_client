@@ -39,15 +39,13 @@ a {
 }
 .sidebar {
   height: 100vh;
-  max-height: 100%;
-
   background: #fff;
   box-shadow: 0 16px 38px -12px rgba(0, 0, 0, 0.56),
     0 4px 25px 0 rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
 }
 
 .main-content {
-  margin-top: 80px;
+  margin-top: 120px;
 }
 
 .active-link {
@@ -55,4 +53,20 @@ a {
     0 7px 10px -5px rgba(76, 175, 80, 0.4);
   background-color: #4caf50;
   color: #fff !important;
+}
+
+/* .rounded-icon {
+  border: 1px solid #13b9cd;
+  border-radius: 50%;
+  background: none;
+  padding: 5px;
+} */
+
+.react-bootstrap-table-page-btns-ul {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.react-bootstrap-table-pagination {
+  margin-top: 5%;
 }

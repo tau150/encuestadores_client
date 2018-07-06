@@ -6,8 +6,6 @@ import {
   NavbarToggler,
   NavbarBrand,
   Nav,
-  NavItem,
-  NavLink,
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
@@ -26,6 +24,53 @@ class LayoutSimple extends Component {
   };
 
   render() {
+    let links;
+
+    if (this.props.role === 1) {
+      links = (
+        <div>
+          <SidebarLink
+            icon={"perm_identity"}
+            pathName={"Usuarios"}
+            path="/usuarios"
+          />
+          <SidebarLink
+            icon={"assignment"}
+            pathName={"Encuestas"}
+            path="/encuestas"
+          />
+          <SidebarLink
+            icon={"assignment_ind"}
+            pathName={"Encuestadores"}
+            path="/encuestadores"
+          />
+        </div>
+      );
+    } else if (this.props.role === 2) {
+      links = (
+        <div>
+          <SidebarLink
+            icon={"assignment"}
+            pathName={"Encuestas"}
+            path="/encuestas"
+          />
+          <SidebarLink
+            icon={"assignment_ind"}
+            pathName={"Encuestadores"}
+            path="/encuestadores"
+          />
+        </div>
+      );
+    } else if (this.props.role === 3) {
+      links = (
+        <SidebarLink
+          icon={"assignment_ind"}
+          pathName={"Encuestadores"}
+          path="/encuestadores"
+        />
+      );
+    }
+
     return (
       <div>
         <div className="container-fluid general-container">
@@ -33,21 +78,7 @@ class LayoutSimple extends Component {
             <div className="sidebar col-2">
               <h5 className="text-center m-5">DPE</h5>
               <div className="dropdown-divider" />
-              <SidebarLink
-                icon={"perm_identity"}
-                pathName={"Usuarios"}
-                path="/usuarios"
-              />
-              <SidebarLink
-                icon={"assignment"}
-                pathName={"Encuestas"}
-                path="/encuestas"
-              />
-              <SidebarLink
-                icon={"assignment_ind"}
-                pathName={"Encuestadores"}
-                path="/encuestadores"
-              />
+              {links}
             </div>
             <div className="col-10">
               <div>
