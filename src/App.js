@@ -1,28 +1,26 @@
-import React, { Component } from "react";
-import { Route, Switch, Redirect, withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import Notifications from "react-notify-toast";
-import { notify } from "react-notify-toast";
-import Login from "./containers/Login";
-import Home from "./components/Home";
-import LayoutSimple from "./components/LayoutSimple";
-import UsersIndex from "./containers/UsersIndex";
-import EditUser from "./components/EditUser";
-import NewUser from "./components/NewUser";
-import { authCheckState, logout } from "./store/actions/authActions";
-import { cleanNotification } from "./store/actions/notificationsActions";
-import Loading from "./components/Loading";
+import React, { Component } from 'react';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import Notifications from 'react-notify-toast';
+import { notify } from 'react-notify-toast';
+import Login from './containers/Login';
+import Home from './components/Home';
+import LayoutSimple from './components/LayoutSimple';
+import UsersIndex from './containers/UsersIndex';
+import EditUser from './components/EditUser';
+import NewUser from './components/NewUser';
+import { authCheckState, logout } from './store/actions/authActions';
+import { cleanNotification } from './store/actions/notificationsActions';
+import Loading from './components/Loading';
+import ChangePassword from './containers/ChangePassword';
+import PollsIndex from './containers/PollsIndex';
 
 class App extends Component {
-  // componentWillMount() {
-  //   this.props.authCheckState();
-  // }
-
   componentDidMount() {
     if (this.props.message) {
-      notify.show(this.props.message, "success", 2000);
+      notify.show(this.props.message, 'success', 2000);
     }
-
+    console.log(this.props);
     this.props.authCheckState();
   }
 
@@ -30,7 +28,7 @@ class App extends Component {
     if (nextProps.message) {
       notify.show(
         nextProps.message,
-        nextProps.error ? "error" : "success",
+        nextProps.error ? 'error' : 'success',
         2000
       );
 
@@ -49,7 +47,7 @@ class App extends Component {
   render() {
     let routes;
     let layout;
-    console.log(this.props.isAuthenticated);
+
     if (!this.props.isAuthenticated) {
       routes = (
         <Switch>
@@ -67,7 +65,8 @@ class App extends Component {
           <Route path="/usuarios" exact component={UsersIndex} />
           <Route path="/usuarios/nuevo" exact component={NewUser} />
           <Route path="/usuarios/:id" component={EditUser} />
-
+          <Route path="/cambiarClave" exact component={ChangePassword} />
+          <Route path="/encuestas" exact component={PollsIndex} />
           <Redirect to="/" />
         </Switch>
       );
@@ -75,6 +74,7 @@ class App extends Component {
       routes = (
         <Switch>
           <Route path="/test" component={Home} />
+          <Route path="/cambiarClave" exact component={ChangePassword} />
           <Route path="/" exact component={Home} />
           <Redirect to="/" />
         </Switch>
@@ -83,7 +83,7 @@ class App extends Component {
 
     layout = this.props.isAuthenticated ? (
       <LayoutSimple
-        userName={localStorage.getItem("userEmail")}
+        userName={localStorage.getItem('userEmail')}
         logout={this.handleLogout}
         role={this.props.user.role_id}
       >
@@ -110,7 +110,7 @@ const mapStateToProps = state => {
     message: state.notifications.message,
     error: state.notifications.error,
     redirectPath: state.notifications.redirectPath,
-    loading: state.notifications.loading
+    loading: state.notifications.loading,
   };
 };
 

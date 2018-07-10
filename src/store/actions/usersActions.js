@@ -1,19 +1,20 @@
-import axiosInstance from "../../axios";
-import { notification, loading, cleanLoading } from "./notificationsActions";
-export const GET_USERS_SUCCESS = "GET_USERS_SUCCESS";
-export const GET_USERS_FAIL = "GET_USERS_FAIL";
+import axiosInstance from '../../axios';
+import { notification, loading, cleanLoading } from './notificationsActions';
+import { fetch } from '../../utils/util';
+export const GET_USERS_SUCCESS = 'GET_USERS_SUCCESS';
+export const GET_USERS_FAIL = 'GET_USERS_FAIL';
 
 export const getUsersSuccess = users => {
   return {
     type: GET_USERS_SUCCESS,
-    users
+    users,
   };
 };
 
 export const getUsersFail = error => {
   return {
     type: GET_USERS_FAIL,
-    error
+    error,
   };
 };
 
@@ -22,8 +23,8 @@ export const getUsers = () => {
     dispatch(loading());
 
     axiosInstance
-      .get("/users", {
-        headers: { Authorization: localStorage.getItem("token") }
+      .get('/users', {
+        headers: { Authorization: localStorage.getItem('token') },
       })
       .then(response => {
         dispatch(cleanLoading());
@@ -41,18 +42,18 @@ export const deleteUser = id => {
     dispatch(loading());
     axiosInstance
       .delete(`/users/${id}`, {
-        headers: { Authorization: localStorage.getItem("token") }
+        headers: { Authorization: localStorage.getItem('token') },
       })
       .then(response => {
         dispatch(getUsers());
         dispatch(cleanLoading());
         dispatch(
-          notification("Usuario eliminado con éxito", false, "/usuarios")
+          notification('Usuario eliminado con éxito', false, '/usuarios')
         );
       })
       .catch(error => {
         dispatch(cleanLoading());
-        dispatch(notification(error.response.data.err, true, "/usuarios"));
+        dispatch(notification(error.response.data.err, true, '/usuarios'));
       });
   };
 };
@@ -61,30 +62,30 @@ export const updateUser = user => {
   return dispatch => {
     const role = user.role_id;
     const idToUpdate = user.userId;
-    const loggedUserId = localStorage.getItem("userId");
+    const loggedUserId = localStorage.getItem('userId');
 
     if (
       idToUpdate === loggedUserId &&
-      role !== localStorage.getItem("roleId")
+      role !== localStorage.getItem('roleId')
     ) {
       return dispatch(
         notification(
-          "No puede cambiar su propio rol, comuníquese con el adminsitrador",
+          'No puede cambiar su propio rol, comuníquese con el adminsitrador',
           true,
-          "/usuarios"
+          '/usuarios'
         )
       );
     }
 
     axiosInstance
       .put(`/users/${user.userId}`, user, {
-        headers: { Authorization: localStorage.getItem("token") }
+        headers: { Authorization: localStorage.getItem('token') },
       })
       .then(response => {
         dispatch(getUsers());
 
         dispatch(
-          notification("Usuario actualizado con éxito", false, "/usuarios")
+          notification('Usuario actualizado con éxito', false, '/usuarios')
         );
       })
       .catch(error => {
@@ -98,33 +99,34 @@ export const saveUser = user => {
     dispatch(loading());
 
     axiosInstance
-      .post("/users", user, {
-        headers: { Authorization: localStorage.getItem("token") }
+      .post('/users', user, {
+        headers: { Authorization: localStorage.getItem('token') },
       })
       .then(response => {
+        dispatch(getUsers());
         dispatch(cleanLoading());
-        dispatch(notification("Usuario creado con éxito", false, "/usuarios"));
+        dispatch(notification('Usuario creado con éxito', false, '/usuarios'));
       })
       .catch(error => {
         console.log(error.response);
         dispatch(cleanLoading());
 
         if (
-          error.response.data.error.name === "SequelizeUniqueConstraintError"
+          error.response.data.error.name === 'SequelizeUniqueConstraintError'
         ) {
           dispatch(
             notification(
-              "Ya existe un usuario con ese correo",
+              'Ya existe un usuario con ese correo',
               true,
-              "/usuarios/nuevo"
+              '/usuarios/nuevo'
             )
           );
         } else {
           dispatch(
             notification(
-              "Hubo un error, por favor comuníquese con el administrador del sistema",
+              'Hubo un error, por favor comuníquese con el administrador del sistema',
               true,
-              "/usuarios/nuevo"
+              '/usuarios/nuevo'
             )
           );
         }

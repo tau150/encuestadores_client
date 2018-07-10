@@ -70,3 +70,17 @@ a {
 .react-bootstrap-table-pagination {
   margin-top: 5%;
 }
+
+.linkNoStyle {
+  margin: 0;
+  padding: 0;
+  color: #000;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.linkNoStyle:hover {
+  text-decoration: none;
+}

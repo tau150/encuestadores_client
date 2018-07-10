@@ -1,12 +1,16 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { withRouter } from "react-router";
-import { login } from "../store/actions/authActions";
-import { loading } from "../store/actions/notificationsActions";
-import styled from "styled-components";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import {
+  login,
+  recoverPassword,
+  authCheckState,
+} from '../store/actions/authActions';
+import { loading } from '../store/actions/notificationsActions';
+import styled from 'styled-components';
 
-import SimpleReactValidator from "simple-react-validator";
-import { notify } from "react-notify-toast";
+import SimpleReactValidator from 'simple-react-validator';
+import { notify } from 'react-notify-toast';
 
 // Reactstrap
 import {
@@ -17,8 +21,8 @@ import {
   Form,
   FormGroup,
   Label,
-  Input
-} from "reactstrap";
+  Input,
+} from 'reactstrap';
 
 const StyledDiv = styled.div`
   width: 100%;
@@ -51,6 +55,10 @@ const StyledDiv = styled.div`
     padding: 5%;
   }
 
+  .olvido {
+    cursor: pointer;
+    margin-top: 30px;
+  }
   @media (min-width: 768px) {
     .card {
       width: 35%;
@@ -64,14 +72,14 @@ class Login extends Component {
     this.validator = new SimpleReactValidator();
   }
 
-  state = { email: "", password: "", withError: false };
+  state = { email: '', password: '', withError: false, wantToRevocer: false };
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.error) {
-      notify.show(nextProps.message, "error", 2000);
+      notify.show(nextProps.message, 'error', 2000);
     }
     if (nextProps.token) {
-      this.props.history.push("/");
+      this.props.history.push('/');
     }
   }
 
@@ -81,13 +89,22 @@ class Login extends Component {
     this.setState(obj);
   };
 
+  handleClickRecover = () => {
+    this.setState(prevState => ({ wantToRevocer: !prevState.wantToRevocer }));
+  };
+
   handleSubmit = e => {
-    if (this.validator.allValid()) {
-      this.props.loading();
-      this.props.login(this.state.email, this.state.password);
+    if (!this.state.wantToRevocer) {
+      if (this.validator.allValid()) {
+        this.props.loading();
+        this.props.login(this.state.email, this.state.password);
+      } else {
+        this.validator.showMessages();
+        this.forceUpdate();
+      }
     } else {
-      this.validator.showMessages();
-      this.forceUpdate();
+      console.log('login por recuperar');
+      this.props.recoverPassword(this.state.email);
     }
   };
 
@@ -97,7 +114,9 @@ class Login extends Component {
         <Card className="card">
           <CardBody className="cardBody">
             <CardTitle className="cardTitle text-bold">
-              Iniciar Sesión
+              {this.state.wantToRevocer
+                ? 'Recuperar Password'
+                : 'Iniciar Sesión'}
             </CardTitle>
 
             <Form className="form">
@@ -111,41 +130,52 @@ class Login extends Component {
                 />
 
                 {this.validator.message(
-                  "email",
+                  'email',
                   this.state.email,
-                  "required|email",
-                  "text-danger",
+                  'required|email',
+                  'text-danger',
                   {
-                    required: "El email es obligatorio",
-                    email: "Ingrese un email válido"
+                    required: 'El email es obligatorio',
+                    email: 'Ingrese un email válido',
                   }
                 )}
               </FormGroup>
-              <FormGroup>
-                <Label for="examplePassword">Contraseña</Label>
-                <Input
-                  type="password"
-                  name="password"
-                  value={this.state.password}
-                  onChange={this.setStateFromInput}
-                />
 
-                {this.validator.message(
-                  "password",
-                  this.state.password,
-                  "required",
-                  "text-danger",
-                  {
-                    required: "Ingrese su password"
-                  }
-                )}
-              </FormGroup>
+              {!this.state.wantToRevocer ? (
+                <FormGroup>
+                  <Label for="examplePassword">Contraseña</Label>
+                  <Input
+                    type="password"
+                    name="password"
+                    value={this.state.password}
+                    onChange={this.setStateFromInput}
+                  />
+
+                  {this.validator.message(
+                    'password',
+                    this.state.password,
+                    'required',
+                    'text-danger',
+                    {
+                      required: 'Ingrese su password',
+                    }
+                  )}
+                </FormGroup>
+              ) : null}
+
               <div className="text-center">
+                <p className="olvido" onClick={this.handleClickRecover}>
+                  {this.state.wantToRevocer
+                    ? 'Iniciar Sesión'
+                    : 'Olvidó su contraseña ?'}
+                </p>
                 <Button
                   className="btn btn-outline-success mt-5"
                   onClick={this.handleSubmit}
                 >
-                  Login
+                  {this.state.wantToRevocer
+                    ? 'Recuperar Password'
+                    : 'Iniciar Sesión'}
                 </Button>
               </div>
             </Form>
@@ -161,13 +191,13 @@ const mapStateToProps = state => {
     error: state.notifications.error,
     message: state.notifications.message,
     token: state.auth.token,
-    loading: state.notifications.loading
+    loading: state.notifications.loading,
   };
 };
 
 export default withRouter(
   connect(
     mapStateToProps,
-    { login, loading }
+    { login, recoverPassword, loading, authCheckState }
   )(Login)
 );

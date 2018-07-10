@@ -5,7 +5,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import SweetAlert from 'sweetalert2-react';
 import GridCard from '../components/GridCard';
-import { getUsers, deleteUser } from '../store/actions/usersActions';
+import { getPolls, deletePoll } from '../store/actions/pollsActions';
 
 const ContainerIcons = styled.div`
   cursor: pointer;
@@ -18,7 +18,7 @@ class UsersIndex extends Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.allUsers !== nextProps.allUsers) {
+    if (this.props.allPolls !== nextProps.allPolls) {
       return true;
     }
     if (this.state.showSwal !== nextState.showSwal) {
@@ -29,18 +29,18 @@ class UsersIndex extends Component {
   }
 
   componentDidMount() {
-    if (this.props.allUsers === null) {
-      this.props.getUsers();
+    if (this.props.allPolls === null) {
+      this.props.getPolls();
     }
   }
 
   handleEdit = e => {
     const id = e.target.getAttribute('data-id');
-    this.props.history.push('/usuarios/' + id);
+    this.props.history.push('/encuestas/' + id);
   };
 
   handleDelete = () => {
-    this.props.deleteUser(this.state.idToDelete);
+    this.props.deletePoll(this.state.idToDelete);
     this.setState({
       showSwal: false,
       idToDelete: null,
@@ -57,7 +57,7 @@ class UsersIndex extends Component {
   };
 
   render() {
-    if (!this.props.allUsers) return null;
+    if (!this.props.allPolls) return null;
 
     // const headerSortingStyle = { color: "red" };
 
@@ -83,7 +83,7 @@ class UsersIndex extends Component {
       );
     };
 
-    const users = this.props.allUsers;
+    const polls = this.props.allPolls;
     const columns = [
       {
         dataField: 'id',
@@ -96,16 +96,8 @@ class UsersIndex extends Component {
         sort: true,
       },
       {
-        dataField: 'surname',
-        text: 'Apellido',
-      },
-      {
-        dataField: 'email',
-        text: 'Email',
-      },
-      {
-        dataField: 'Role.name',
-        text: 'Rol',
+        dataField: 'description',
+        text: 'Descripción',
       },
       {
         dataField: 'id',
@@ -117,9 +109,9 @@ class UsersIndex extends Component {
     return (
       <div>
         <GridCard
-          title={'Usuarios'}
-          subTitle={'Listado de Usuarios'}
-          resource={'usuarios'}
+          title={'Encuestas'}
+          subTitle={'Listado de Encuestas'}
+          resource={'encuestas'}
           allowNew={true}
         >
           <SweetAlert
@@ -135,7 +127,7 @@ class UsersIndex extends Component {
           />
           <BootstrapTable
             keyField={'id'}
-            data={users}
+            data={polls}
             columns={columns}
             pagination={paginationFactory()}
           />
@@ -147,12 +139,12 @@ class UsersIndex extends Component {
 
 const mapStateToProps = state => {
   return {
-    allUsers: state.users.users,
+    allPolls: state.polls.polls,
     loading: state.notifications.loading,
   };
 };
 
 export default connect(
   mapStateToProps,
-  { getUsers, deleteUser }
+  { getPolls, deletePoll }
 )(UsersIndex);

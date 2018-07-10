@@ -1,5 +1,7 @@
-import React, { Component } from "react";
-import SidebarLink from "../components/SidebarLink";
+import React, { Component } from 'react';
+import SidebarLink from '../components/SidebarLink';
+import { Link } from 'react-router-dom';
+
 import {
   Collapse,
   Navbar,
@@ -9,17 +11,17 @@ import {
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem
-} from "reactstrap";
+  DropdownItem,
+} from 'reactstrap';
 
 class LayoutSimple extends Component {
   state = {
-    isOpen: false
+    isOpen: false,
   };
 
   toggle = () => {
     this.setState({
-      isOpen: !this.state.isOpen
+      isOpen: !this.state.isOpen,
     });
   };
 
@@ -30,18 +32,18 @@ class LayoutSimple extends Component {
       links = (
         <div>
           <SidebarLink
-            icon={"perm_identity"}
-            pathName={"Usuarios"}
+            icon={'perm_identity'}
+            pathName={'Usuarios'}
             path="/usuarios"
           />
           <SidebarLink
-            icon={"assignment"}
-            pathName={"Encuestas"}
+            icon={'assignment'}
+            pathName={'Encuestas'}
             path="/encuestas"
           />
           <SidebarLink
-            icon={"assignment_ind"}
-            pathName={"Encuestadores"}
+            icon={'assignment_ind'}
+            pathName={'Encuestadores'}
             path="/encuestadores"
           />
         </div>
@@ -50,13 +52,13 @@ class LayoutSimple extends Component {
       links = (
         <div>
           <SidebarLink
-            icon={"assignment"}
-            pathName={"Encuestas"}
+            icon={'assignment'}
+            pathName={'Encuestas'}
             path="/encuestas"
           />
           <SidebarLink
-            icon={"assignment_ind"}
-            pathName={"Encuestadores"}
+            icon={'assignment_ind'}
+            pathName={'Encuestadores'}
             path="/encuestadores"
           />
         </div>
@@ -64,8 +66,8 @@ class LayoutSimple extends Component {
     } else if (this.props.role === 3) {
       links = (
         <SidebarLink
-          icon={"assignment_ind"}
-          pathName={"Encuestadores"}
+          icon={'assignment_ind'}
+          pathName={'Encuestadores'}
           path="/encuestadores"
         />
       );
@@ -102,8 +104,10 @@ class LayoutSimple extends Component {
                             Cerrar sesión
                           </DropdownItem>
                           <DropdownItem>
-                            <i className="material-icons pr-2">exit_to_app</i>
-                            Cambiar Contraseña
+                            <Link to="/cambiarClave" className="linkNoStyle">
+                              <i className="material-icons pr-2">security</i>
+                              Cambiar Contraseña
+                            </Link>
                           </DropdownItem>
                         </DropdownMenu>
                       </UncontrolledDropdown>
