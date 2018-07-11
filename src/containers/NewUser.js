@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import GridCard from "./GridCard";
-import UserForm from "./UserForm";
+import GridCard from "../components/GridCard";
+import UserForm from "../components/UserForm";
 import { saveUser } from "../store/actions/usersActions";
 
 class NewUser extends Component {

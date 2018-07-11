@@ -1,11 +1,11 @@
-import axiosInstance from '../../axios';
-import { notification, loading, cleanLoading } from './notificationsActions';
-export const GET_POLLS_SUCCESS = 'GET_POLLS_SUCCESS';
+import axiosInstance from "../../axios";
+import { notification, loading, cleanLoading } from "./notificationsActions";
+export const GET_POLLS_SUCCESS = "GET_POLLS_SUCCESS";
 
 export const getPollsSuccess = polls => {
   return {
     type: GET_POLLS_SUCCESS,
-    polls,
+    polls
   };
 };
 
@@ -14,13 +14,14 @@ export const getPolls = () => {
     dispatch(loading());
 
     try {
-      const response = await axiosInstance.get('/polls', {
-        headers: { Authorization: localStorage.getItem('token') },
+      const response = await axiosInstance.get("/polls", {
+        headers: { Authorization: localStorage.getItem("token") }
       });
       dispatch(cleanLoading());
       dispatch(getPollsSuccess(response.data.polls));
     } catch (e) {
       dispatch(cleanLoading());
+      dispatch(notification(e.response.data.err, true, "/encuestas"));
     }
   };
 };
@@ -30,92 +31,79 @@ export const deletePoll = id => {
     dispatch(loading());
     try {
       const response = await axiosInstance.delete(`/polls/${id}`, {
-        headers: { Authorization: localStorage.getItem('token') },
+        headers: { Authorization: localStorage.getItem("token") }
       });
       dispatch(getPolls());
       dispatch(cleanLoading());
       dispatch(
-        notification('Encuesta eliminada con éxito', false, '/encuestas')
+        notification("Encuesta eliminada con éxito", false, "/encuestas")
       );
     } catch (error) {
       dispatch(cleanLoading());
-      dispatch(notification(error.response.data.err, true, '/encuestas'));
+      dispatch(notification(error.response.data.err, true, "/encuestas"));
     }
   };
 };
 
-// export const updateUser = user => {
-//   return dispatch => {
-//     const role = user.role_id;
-//     const idToUpdate = user.userId;
-//     const loggedUserId = localStorage.getItem('userId');
+export const updatePoll = poll => {
+  return dispatch => {
+    const idToUpdate = poll.pollId;
 
-//     if (
-//       idToUpdate === loggedUserId &&
-//       role !== localStorage.getItem('roleId')
-//     ) {
-//       return dispatch(
-//         notification(
-//           'No puede cambiar su propio rol, comuníquese con el adminsitrador',
-//           true,
-//           '/usuarios'
-//         )
-//       );
-//     }
+    axiosInstance
+      .put(`/polls/${idToUpdate}`, poll, {
+        headers: { Authorization: localStorage.getItem("token") }
+      })
+      .then(response => {
+        dispatch(getPolls());
 
-//     axiosInstance
-//       .put(`/users/${user.userId}`, user, {
-//         headers: { Authorization: localStorage.getItem('token') },
-//       })
-//       .then(response => {
-//         dispatch(getUsers());
+        dispatch(
+          notification("Encuesta actualizada con éxito", false, "/encuestas")
+        );
+      })
+      .catch(error => {
+        dispatch(notification(error.response, true));
+      });
+  };
+};
 
-//         dispatch(
-//           notification('Usuario actualizado con éxito', false, '/usuarios')
-//         );
-//       })
-//       .catch(error => {
-//         dispatch(notification(error.response, true));
-//       });
-//   };
-// };
+export const savePoll = poll => {
+  return dispatch => {
+    dispatch(loading());
 
-// export const saveUser = user => {
-//   return dispatch => {
-//     dispatch(loading());
+    axiosInstance
+      .post("/polls", poll, {
+        headers: { Authorization: localStorage.getItem("token") }
+      })
+      .then(response => {
+        dispatch(getPolls());
+        dispatch(cleanLoading());
+        dispatch(
+          notification("Encuesta creada con éxito", false, "/encuestas")
+        );
+      })
+      .catch(error => {
+        console.log(error.response);
+        dispatch(cleanLoading());
 
-//     axiosInstance
-//       .post('/users', user, {
-//         headers: { Authorization: localStorage.getItem('token') },
-//       })
-//       .then(response => {
-//         dispatch(getUsers());
-//         dispatch(cleanLoading());
-//         dispatch(notification('Usuario creado con éxito', false, '/usuarios'));
-//       })
-//       .catch(error => {
-//         console.log(error.response);
-//         dispatch(cleanLoading());
-
-//         if (
-//           error.response.data.error.name === 'SequelizeUniqueConstraintError'
-//         ) {
-//           dispatch(
-//             notification(
-//               'Ya existe un usuario con ese correo',
-//               true,
-//               '/usuarios/nuevo'
-//             )
-//           );
-//         } else {
-//           dispatch(
-//             notification(
-//               'Hubo un error, por favor comuníquese con el administrador del sistema',
-//               true,
-//               '/usuarios/nuevo'
-//             )
-//           );
-//         }
-//       });
-//   };
-// };
+        if (
+          error.response.data.error.name === "SequelizeUniqueConstraintError"
+        ) {
+          dispatch(
+            notification(
+              "Ya existe una encuesta con ese nombre, debe ser única",
+              true,
+              "/encuestas/nuevo"
+            )
+          );
+        } else {
+          dispatch(
+            notification(
+              "Hubo un error, por favor comuníquese con el administrador del sistema",
+              true,
+              "/encuestas/nuevo"
+            )
+          );
+        }
+      });
+  };
+};
