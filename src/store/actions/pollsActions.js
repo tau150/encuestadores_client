@@ -30,7 +30,7 @@ export const deletePoll = id => {
   return async dispatch => {
     dispatch(loading());
     try {
-      const response = await axiosInstance.delete(`/polls/${id}`, {
+      await axiosInstance.delete(`/polls/${id}`, {
         headers: { Authorization: localStorage.getItem("token") }
       });
       dispatch(getPolls());

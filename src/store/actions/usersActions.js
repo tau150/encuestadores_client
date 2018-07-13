@@ -1,6 +1,5 @@
 import axiosInstance from "../../axios";
 import { notification, loading, cleanLoading } from "./notificationsActions";
-import { fetch } from "../../utils/util";
 export const GET_USERS_SUCCESS = "GET_USERS_SUCCESS";
 export const GET_USERS_FAIL = "GET_USERS_FAIL";
 

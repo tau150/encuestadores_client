@@ -8,7 +8,7 @@ import { connectRouter, routerMiddleware } from "connected-react-router";
 import { ConnectedRouter } from "connected-react-router";
 import MainRouter from "./containers/MainRouter";
 import thunk from "redux-thunk";
-import App from "./App";
+// import App from "./App";
 import authReducer from "./store/reducers/authReducer";
 import usersReducer from "./store/reducers/usersReducer";
 import notificationsReducer from "./store/reducers/notificationsReducer";
@@ -35,17 +35,10 @@ const store = createStore(
   )
 );
 
-// const store = createStore(
-//   rootReducer,
-//   composeEnhancers(applyMiddleware(thunk))
-// );
-
 const app = (
   <Provider store={store}>
     <ConnectedRouter history={history}>
-      <HashRouter>
-        <App />
-      </HashRouter>
+      <MainRouter />
     </ConnectedRouter>
   </Provider>
 );

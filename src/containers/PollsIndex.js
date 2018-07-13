@@ -93,6 +93,7 @@ class UsersIndex extends PureComponent {
       {
         dataField: "name",
         text: "Nombre",
+        headerClasses: "datatable-sortable",
         sort: true
       },
       {
@@ -102,6 +103,8 @@ class UsersIndex extends PureComponent {
       {
         dataField: "id",
         text: "Acciones",
+        headerClasses: "datatable-actions",
+
         formatter: actionsFormatter
       }
     ];

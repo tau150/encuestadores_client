@@ -138,7 +138,9 @@ export const authCheckState = () => {
 export const recoverPassword = email => {
   return async dispatch => {
     try {
-      const response = await axiosInstance.post("/auth/recover", { email });
+      // const response = await axiosInstance.post("/auth/recover", { email });
+
+      await axiosInstance.post("/auth/recover", { email });
       dispatch(cleanLoading());
       dispatch(
         notification("La nueva contraseña fue enviada a su correo", false)
@@ -183,7 +185,7 @@ export const changePassword = user => {
     dispatch(loading());
 
     try {
-      const response = await axiosInstance.post(
+      await axiosInstance.post(
         "/auth/changePassword",
         { user },
         {

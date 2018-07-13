@@ -38,8 +38,8 @@ a {
   right: 0;
 }
 .sidebar {
-  height: 100vh;
   background: #fff;
+  min-height: 100vh;
   box-shadow: 0 16px 38px -12px rgba(0, 0, 0, 0.56),
     0 4px 25px 0 rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
 }
@@ -83,4 +83,28 @@ a {
 
 .linkNoStyle:hover {
   text-decoration: none;
+}
+
+.datatable-sortable::after {
+  font-family: "Material Icons";
+  content: "sort";
+  font-weight: bold;
+  color: #777;
+  padding: 3px;
+  margin: 5px;
+  font-feature-settings: "liga" 1;
+  border: 1px solid #777;
+  border-radius: 50%;
+}
+
+.datatable-actions {
+  width: 120px;
+  max-width: 80px;
+}
+
+.page-item.active .page-link {
+  background: none;
+  border: 1px solid #50aa54;
+  font-weight: bold;
+  color: #50aa54;
 }

@@ -1,47 +1,28 @@
 import React, { Component } from "react";
-import { Route, Switch, Redirect, withRouter } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import Loading from "../components/Loading";
+// import Loading from "../components/Loading";
 import { cleanNotification } from "../store/actions/notificationsActions";
-import Notifications from "react-notify-toast";
-import { notify } from "react-notify-toast";
+// import Notifications from "react-notify-toast";
+// import { notify } from "react-notify-toast";
+import { HashRouter } from "react-router-dom";
+
 import Login from "../containers/Login";
-import App from "../App";
+import { authCheckState, logout } from "../store/actions/authActions";
+import AppRouted from "../AppRouted";
 
 class MainRouter extends Component {
-  state = {
-    loggedIn: false
-  };
-
   componentDidMount() {
-    if (this.props.message) {
-      notify.show(this.props.message, "success", 2000);
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.message) {
-      notify.show(
-        nextProps.message,
-        nextProps.error ? "error" : "success",
-        2000
-      );
-
-      if (nextProps.redirectPath) {
-        this.props.history.push(nextProps.redirectPath);
-      }
-
-      this.props.cleanNotification();
-    }
+    this.props.authCheckState();
   }
 
   render() {
-    const routes = localStorage.getItem("token") ? <App /> : <Login />;
+    const routes = this.props.isAuthenticated ? <AppRouted /> : <Login />;
 
     return (
       <div>
-        <Notifications options={{ zIndex: 200 }} />
-        {routes}
+        <HashRouter>{routes}</HashRouter>
+        {/* <Notifications options={{ zIndex: 200 }} /> */}
       </div>
     );
   }
@@ -60,5 +41,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { cleanNotification }
+  { cleanNotification, authCheckState, logout }
 )(MainRouter);
