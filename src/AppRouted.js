@@ -15,6 +15,8 @@ import ChangePassword from "./containers/ChangePassword";
 import PollsIndex from "./containers/PollsIndex";
 import NewPoll from "./containers/NewPoll";
 import EditPoll from "./containers/EditPoll";
+import PollstersIndex from "./containers/PollstersIndex";
+import NewPollster from "./containers/NewPollster";
 
 class AppRouted extends Component {
   componentWillReceiveProps(nextProps) {
@@ -51,6 +53,8 @@ class AppRouted extends Component {
           <Route path="/encuestas" exact component={PollsIndex} />
           <Route path="/encuestas/nuevo" exact component={NewPoll} />
           <Route path="/encuestas/:id" exact component={EditPoll} />
+          <Route path="/encuestadores" exact component={PollstersIndex} />
+          <Route path="/encuestadores/nuevo" exact component={NewPollster} />
           <Redirect to="/" />
         </Switch>
       );

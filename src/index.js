@@ -13,6 +13,9 @@ import authReducer from "./store/reducers/authReducer";
 import usersReducer from "./store/reducers/usersReducer";
 import notificationsReducer from "./store/reducers/notificationsReducer";
 import pollsReducer from "./store/reducers/pollsReducer";
+import pollstersReducer from "./store/reducers/pollstersReducer";
+import citiesReducer from "./store/reducers/citiesReducer";
+
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const history = createBrowserHistory();
@@ -21,7 +24,9 @@ const rootReducer = combineReducers({
   auth: authReducer,
   users: usersReducer,
   notifications: notificationsReducer,
-  polls: pollsReducer
+  polls: pollsReducer,
+  pollsters: pollstersReducer,
+  cities: citiesReducer
 });
 
 const store = createStore(

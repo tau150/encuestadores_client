@@ -108,3 +108,19 @@ a {
   font-weight: bold;
   color: #50aa54;
 }
+
+.img-perfil-grid {
+  width: 80px;
+  border-radius: 50%;
+}
+
+.react-bootstrap-table tr td {
+  vertical-align: middle;
+  font-size: 1.1rem;
+}
+
+.img-perfil-profile {
+  width: 110px !important;
+  border-radius: 50%;
+  box-shadow: 10px 10px 41px -11px rgba(0, 0, 0, 0.75);
+}

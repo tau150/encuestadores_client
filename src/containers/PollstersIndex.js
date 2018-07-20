@@ -5,42 +5,37 @@ import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import SweetAlert from "sweetalert2-react";
 import GridCard from "../components/GridCard";
-import { getPolls, deletePoll } from "../store/actions/pollsActions";
+import {
+  getPollsters,
+  deletePollster
+} from "../store/actions/pollstersActions";
 
-const ContainerIcons = styled.div`
-  cursor: pointer;
-`;
+import {
+  actionsFormatter,
+  imageFormatter,
+  citiesFormatter,
+  activeFormatter
+} from "../utils/util";
 
-class PollsIndex extends PureComponent {
+class PolltersIndex extends PureComponent {
   state = {
     showSwal: false,
     idToDelete: null
   };
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   if (this.props.allPolls !== nextProps.allPolls) {
-  //     return true;
-  //   }
-  //   if (this.state.showSwal !== nextState.showSwal) {
-  //     return true;
-  //   }
-
-  //   return false;
-  // }
-
   componentDidMount() {
-    if (this.props.allPolls === null) {
-      this.props.getPolls();
+    if (this.props.allPollsters === null) {
+      this.props.getPollsters();
     }
   }
 
   handleEdit = e => {
     const id = e.target.getAttribute("data-id");
-    this.props.history.push("/encuestas/" + id);
+    this.props.history.push("/encuestadores/" + id);
   };
 
   handleDelete = () => {
-    this.props.deletePoll(this.state.idToDelete);
+    this.props.deletePollster(this.state.idToDelete);
     this.setState({
       showSwal: false,
       idToDelete: null
@@ -57,38 +52,21 @@ class PollsIndex extends PureComponent {
   };
 
   render() {
-    if (!this.props.allPolls) return null;
+    if (!this.props.allPollsters) return null;
 
     // const headerSortingStyle = { color: "red" };
 
-    const actionsFormatter = (cell, row, rowIndex) => {
-      return (
-        <ContainerIcons className="d-flex justify-content-around align-items-center">
-          <i
-            data-id={row.id}
-            className="material-icons text-info rounded-icon"
-            onClick={this.handleEdit}
-          >
-            edit
-          </i>
-
-          <i
-            data-id={row.id}
-            onClick={this.handleDeleteConfirm}
-            className="material-icons text-danger"
-          >
-            delete
-          </i>
-        </ContainerIcons>
-      );
-    };
-
-    const polls = this.props.allPolls;
+    const pollsters = this.props.allPollsters;
     const columns = [
       {
         dataField: "id",
         text: "ID",
         hidden: true
+      },
+      {
+        dataField: "img",
+        text: "Perfil",
+        formatter: imageFormatter
       },
       {
         dataField: "name",
@@ -97,8 +75,30 @@ class PollsIndex extends PureComponent {
         sort: true
       },
       {
-        dataField: "description",
-        text: "Descripción"
+        dataField: "surname",
+        text: "Apellido",
+        headerClasses: "datatable-sortable",
+        sort: true
+      },
+      {
+        dataField: "dni",
+        text: "DNI"
+      },
+      {
+        dataField: "Poll.name",
+        text: "Encuesta"
+      },
+      {
+        dataField: "active",
+        headerClasses: "datatable-sortable",
+        text: "Activo",
+        sort: true,
+        formatter: activeFormatter
+      },
+      {
+        dataField: "cities",
+        text: "Localidad",
+        formatter: citiesFormatter
       },
       {
         dataField: "id",
@@ -112,9 +112,9 @@ class PollsIndex extends PureComponent {
     return (
       <div>
         <GridCard
-          title={"Encuestas"}
-          subTitle={"Listado de Encuestas"}
-          resource={"encuestas"}
+          title={"Encuestadores"}
+          subTitle={"Listado de Encuestadores"}
+          resource={"encuestadores"}
           allowNew={true}
         >
           <SweetAlert
@@ -130,7 +130,8 @@ class PollsIndex extends PureComponent {
           />
           <BootstrapTable
             keyField={"id"}
-            data={polls}
+            className="BootrstrapTable"
+            data={pollsters}
             columns={columns}
             pagination={paginationFactory()}
           />
@@ -142,12 +143,12 @@ class PollsIndex extends PureComponent {
 
 const mapStateToProps = state => {
   return {
-    allPolls: state.polls.polls,
+    allPollsters: state.pollsters.pollsters,
     loading: state.notifications.loading
   };
 };
 
 export default connect(
   mapStateToProps,
-  { getPolls, deletePoll }
-)(PollsIndex);
+  { getPollsters, deletePollster }
+)(PolltersIndex);
