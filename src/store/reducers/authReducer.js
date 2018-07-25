@@ -2,8 +2,8 @@ import {
   AUTH_START,
   AUTH_FAIL,
   AUTH_SUCCESS,
-  AUTH_LOGOUT,
-} from '../actions/authActions';
+  AUTH_LOGOUT_SUCCESS
+} from "../actions/authActions";
 
 const initialState = {
   token: null,
@@ -11,7 +11,7 @@ const initialState = {
   error: null,
   loading: false,
   userRole: null,
-  authRedirectPath: '/',
+  authRedirectPath: "/"
 };
 
 const authReducer = (state = initialState, action) => {
@@ -28,17 +28,16 @@ const authReducer = (state = initialState, action) => {
         loading: false,
         error: null,
         token: action.token,
-        userRole: action.userRole,
-        user: action.user,
+        // userRole: action.userRole,
+        user: action.user
       };
 
-    case AUTH_LOGOUT:
+    case AUTH_LOGOUT_SUCCESS:
       return {
         ...state,
-        loading: false,
         token: null,
         userId: null,
-        userRole: null,
+        userRole: null
       };
 
     default:

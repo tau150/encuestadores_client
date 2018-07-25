@@ -22,7 +22,6 @@ class App extends Component {
     if (this.props.message) {
       notify.show(this.props.message, "success", 2000);
     }
-    console.log(this.props);
     this.props.authCheckState();
   }
 

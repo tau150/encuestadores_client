@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Button, Form, FormGroup, Label, Input } from "reactstrap";
 import SimpleReactValidator from "simple-react-validator";
 import styled from "styled-components";
+import Select from "react-select";
 import ImageUploader from "react-images-upload";
 
 const StyledDiv = styled.div`
@@ -20,23 +21,30 @@ class PollsterForm extends Component {
 
   state = this.props.pollster
     ? {
+        pollsterId: this.props.pollsterId,
         name: this.props.pollster.name,
         surname: this.props.pollster.surname,
         dni: this.props.pollster.dni,
-        jobPositon: this.props.pollster.jobPositon,
-        city: this.props.pollster.city,
+        jobPosition: this.props.pollster.jobPosition,
+        cities: this.props.pollster.cities.map(city => {
+          return {
+            value: city.id,
+            label: city.city
+          };
+        }),
         active: this.props.pollster.active,
-        img: this.props.pollster.img,
-        poll: this.props.pollster.poll
+        profileImg: this.props.pollster.img,
+        poll: this.props.pollster.Poll.id
       }
     : {
         name: "",
         surname: "",
         dni: "",
         jobPosition: "",
-        city: "",
+        cities: null,
+        selectedOption: null,
         active: true,
-        img: "/images/default_user.jpg",
+        img: "",
         poll: ""
       };
 
@@ -44,6 +52,13 @@ class PollsterForm extends Component {
     var obj = {};
     obj[event.target.name] = event.target.value;
     this.setState(obj);
+  };
+
+  setStateFromInputArray = event => {
+    const newState = this.state.cities.concat([event.target.value]);
+    this.setState({
+      cities: newState
+    });
   };
 
   handleActive = () => {
@@ -61,26 +76,57 @@ class PollsterForm extends Component {
     }
   };
 
+  handleChangeMulti = cities => {
+    this.setState({ cities });
+  };
+
   onDrop = picture => {
     this.setState({
       img: picture[0]
     });
   };
 
+  handleChangePicture = () => {
+    this.setState({ profileImg: null });
+  };
+
   render() {
+    const cities = this.props.cities.map(city => {
+      return {
+        value: city.id,
+        label: city.city
+      };
+    });
+
+    const imageHandler = this.state.profileImg ? (
+      <div className="d-flex flex-column text-center align-items-center">
+        <img
+          src={this.state.profileImg}
+          className="img-fluid img-perfil-profile"
+        />
+        <button
+          onClick={this.handleChangePicture}
+          type="button"
+          className="btn btn-outline-info mt-5"
+        >
+          Cambiar foto
+        </button>
+      </div>
+    ) : (
+      <ImageUploader
+        withIcon={true}
+        buttonText="Seleccione una imagen de Perfil"
+        onChange={this.onDrop}
+        withPreview={true}
+        imgExtension={[".jpg", ".gif", ".png"]}
+        maxFileSize={5242880}
+      />
+    );
+
     return (
       <Form>
         <StyledDiv>
-          <div className="col-4">
-            <ImageUploader
-              withIcon={true}
-              buttonText="Seleccione una imagen de Perfil"
-              onChange={this.onDrop}
-              withPreview={true}
-              imgExtension={[".jpg", ".gif", ".png", ".gif"]}
-              maxFileSize={5242880}
-            />
-          </div>
+          <div className="col-4 text-center">{imageHandler}</div>
 
           <FormGroup className="mt-5" tag="fieldset">
             <FormGroup check>
@@ -194,23 +240,36 @@ class PollsterForm extends Component {
           </FormGroup>
 
           <FormGroup className="col-md-4">
-            <Label for="description">Ciudad</Label>
-            <Input
+            <Label for="description">Ciudad / es</Label>
+            {/* <Input
               type="select"
-              name="city"
-              id="city"
-              onChange={this.setStateFromInput}
+              name="cities"
+              id="cities"
+              onChange={this.setStateFromInputArray}
               value={this.state.city}
             >
               <option selected>Seleccione una opción</option>
               {this.props.cities.map(city => (
-                <option value={city.id}>{city.city}</option>
+                <option key={city.id} value={city.id}>
+                  {city.city}
+                </option>
               ))}
-            </Input>
+            </Input> */}
+
+            <Select
+              value={this.state.cities}
+              onChange={this.handleChangeMulti}
+              options={cities}
+              name="cities"
+              isMulti
+              className="multiselect"
+              isSearchable
+              placeholder="Seleccione alguna opción"
+            />
 
             {this.validator.message(
-              "city",
-              this.state.city,
+              "cities",
+              this.state.cities,
               "required",
               "text-danger",
               {
@@ -228,9 +287,11 @@ class PollsterForm extends Component {
               onChange={this.setStateFromInput}
               value={this.state.poll}
             >
-              <option selected>Seleccione una opción</option>
+              <option>Seleccione una opción</option>
               {this.props.polls.map(poll => (
-                <option value={poll.id}>{poll.name}</option>
+                <option key={poll.id} value={poll.id}>
+                  {poll.name}
+                </option>
               ))}
             </Input>
 
@@ -248,9 +309,10 @@ class PollsterForm extends Component {
         <div className="row d-flex justify-content-center mt-3">
           <Button
             className="btn btn-outline btn-success"
+            s
             onClick={this.handleSubmit}
           >
-            {this.state.pollId ? "Guardar" : "Crear"}
+            {this.state.pollsterId !== "" ? "Guardar" : "Crear"}
           </Button>
         </div>
       </Form>

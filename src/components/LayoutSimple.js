@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import SidebarLink from '../components/SidebarLink';
-import { Link } from 'react-router-dom';
+import React, { Component } from "react";
+import SidebarLink from "../components/SidebarLink";
+import { Link } from "react-router-dom";
 
 import {
   Collapse,
@@ -11,17 +11,17 @@ import {
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem,
-} from 'reactstrap';
+  DropdownItem
+} from "reactstrap";
 
 class LayoutSimple extends Component {
   state = {
-    isOpen: false,
+    isOpen: false
   };
 
   toggle = () => {
     this.setState({
-      isOpen: !this.state.isOpen,
+      isOpen: !this.state.isOpen
     });
   };
 
@@ -32,18 +32,18 @@ class LayoutSimple extends Component {
       links = (
         <div>
           <SidebarLink
-            icon={'perm_identity'}
-            pathName={'Usuarios'}
+            icon={"perm_identity"}
+            pathName={"Usuarios"}
             path="/usuarios"
           />
           <SidebarLink
-            icon={'assignment'}
-            pathName={'Encuestas'}
+            icon={"assignment"}
+            pathName={"Encuestas"}
             path="/encuestas"
           />
           <SidebarLink
-            icon={'assignment_ind'}
-            pathName={'Encuestadores'}
+            icon={"assignment_ind"}
+            pathName={"Encuestadores"}
             path="/encuestadores"
           />
         </div>
@@ -52,13 +52,13 @@ class LayoutSimple extends Component {
       links = (
         <div>
           <SidebarLink
-            icon={'assignment'}
-            pathName={'Encuestas'}
+            icon={"assignment"}
+            pathName={"Encuestas"}
             path="/encuestas"
           />
           <SidebarLink
-            icon={'assignment_ind'}
-            pathName={'Encuestadores'}
+            icon={"assignment_ind"}
+            pathName={"Encuestadores"}
             path="/encuestadores"
           />
         </div>
@@ -66,8 +66,8 @@ class LayoutSimple extends Component {
     } else if (this.props.role === 3) {
       links = (
         <SidebarLink
-          icon={'assignment_ind'}
-          pathName={'Encuestadores'}
+          icon={"assignment_ind"}
+          pathName={"Encuestadores"}
           path="/encuestadores"
         />
       );

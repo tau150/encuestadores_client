@@ -1,16 +1,18 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router";
 import {
   login,
   recoverPassword,
-  authCheckState,
-} from '../store/actions/authActions';
-import { loading } from '../store/actions/notificationsActions';
-import styled from 'styled-components';
+  authCheckState
+} from "../store/actions/authActions";
+import { loading } from "../store/actions/notificationsActions";
+import { cleanNotification } from "../store/actions/notificationsActions";
 
-import SimpleReactValidator from 'simple-react-validator';
-import { notify } from 'react-notify-toast';
+import styled from "styled-components";
+import Notifications from "react-notify-toast";
+import SimpleReactValidator from "simple-react-validator";
+import { notify } from "react-notify-toast";
 
 // Reactstrap
 import {
@@ -21,8 +23,8 @@ import {
   Form,
   FormGroup,
   Label,
-  Input,
-} from 'reactstrap';
+  Input
+} from "reactstrap";
 
 const StyledDiv = styled.div`
   width: 100%;
@@ -72,15 +74,26 @@ class Login extends Component {
     this.validator = new SimpleReactValidator();
   }
 
-  state = { email: '', password: '', withError: false, wantToRevocer: false };
+  state = { email: "", password: "", withError: false, wantToRevocer: false };
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.error) {
-      notify.show(nextProps.message, 'error', 2000);
+    if (nextProps.message) {
+      notify.show(
+        nextProps.message,
+        nextProps.error ? "error" : "success",
+        2000
+      );
+
+      if (nextProps.redirectPath) {
+        this.props.history.push(nextProps.redirectPath);
+      }
+
+      this.props.cleanNotification();
     }
-    if (nextProps.token) {
-      this.props.history.push('/');
-    }
+  }
+
+  componentDidMount() {
+    this.props.authCheckState();
   }
 
   setStateFromInput = event => {
@@ -103,7 +116,6 @@ class Login extends Component {
         this.forceUpdate();
       }
     } else {
-      console.log('login por recuperar');
       this.props.recoverPassword(this.state.email);
     }
   };
@@ -111,12 +123,13 @@ class Login extends Component {
   render() {
     return (
       <StyledDiv>
+        <Notifications options={{ zIndex: 200 }} />
         <Card className="card">
           <CardBody className="cardBody">
             <CardTitle className="cardTitle text-bold">
               {this.state.wantToRevocer
-                ? 'Recuperar Password'
-                : 'Iniciar Sesión'}
+                ? "Recuperar Password"
+                : "Iniciar Sesión"}
             </CardTitle>
 
             <Form className="form">
@@ -130,13 +143,13 @@ class Login extends Component {
                 />
 
                 {this.validator.message(
-                  'email',
+                  "email",
                   this.state.email,
-                  'required|email',
-                  'text-danger',
+                  "required|email",
+                  "text-danger",
                   {
-                    required: 'El email es obligatorio',
-                    email: 'Ingrese un email válido',
+                    required: "El email es obligatorio",
+                    email: "Ingrese un email válido"
                   }
                 )}
               </FormGroup>
@@ -152,12 +165,12 @@ class Login extends Component {
                   />
 
                   {this.validator.message(
-                    'password',
+                    "password",
                     this.state.password,
-                    'required',
-                    'text-danger',
+                    "required",
+                    "text-danger",
                     {
-                      required: 'Ingrese su password',
+                      required: "Ingrese su password"
                     }
                   )}
                 </FormGroup>
@@ -166,16 +179,16 @@ class Login extends Component {
               <div className="text-center">
                 <p className="olvido" onClick={this.handleClickRecover}>
                   {this.state.wantToRevocer
-                    ? 'Iniciar Sesión'
-                    : 'Olvidó su contraseña ?'}
+                    ? "Iniciar Sesión"
+                    : "Olvidó su contraseña ?"}
                 </p>
                 <Button
                   className="btn btn-outline-success mt-5"
                   onClick={this.handleSubmit}
                 >
                   {this.state.wantToRevocer
-                    ? 'Recuperar Password'
-                    : 'Iniciar Sesión'}
+                    ? "Recuperar Password"
+                    : "Iniciar Sesión"}
                 </Button>
               </div>
             </Form>
@@ -191,13 +204,13 @@ const mapStateToProps = state => {
     error: state.notifications.error,
     message: state.notifications.message,
     token: state.auth.token,
-    loading: state.notifications.loading,
+    loading: state.notifications.loading
   };
 };
 
 export default withRouter(
   connect(
     mapStateToProps,
-    { login, recoverPassword, loading, authCheckState }
+    { login, recoverPassword, loading, authCheckState, cleanNotification }
   )(Login)
 );

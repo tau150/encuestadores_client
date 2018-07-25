@@ -18,13 +18,61 @@ export const getPollsters = () => {
         headers: { Authorization: localStorage.getItem("token") }
       });
 
-      console.log(response);
       dispatch(cleanLoading());
       dispatch(getPollsSuccess(response.data.pollsters));
     } catch (e) {
       dispatch(cleanLoading());
       dispatch(notification(e.response.data.err, true, "/encuestadores"));
     }
+  };
+};
+
+export const savePollster = pollster => {
+  return dispatch => {
+    dispatch(loading());
+
+    axiosInstance
+      .post("/pollsters", pollster, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+          "content-type": "multipart/form-data"
+        }
+      })
+      .then(response => {
+        dispatch(getPollsters());
+        dispatch(cleanLoading());
+        dispatch(
+          notification("Encuestador creado con éxito", false, "/encuestadores")
+        );
+      })
+      .catch(error => {
+        dispatch(cleanLoading());
+        dispatch(
+          notification(error.response.data.error, true, "/encuestadores/nuevo")
+        );
+      });
+  };
+};
+
+export const updatePollster = (pollster, id) => {
+  return dispatch => {
+    axiosInstance
+      .put(`/pollsters/${id}`, pollster, {
+        headers: { Authorization: localStorage.getItem("token") }
+      })
+      .then(response => {
+        dispatch(getPollsters());
+        dispatch(
+          notification(
+            "Encuestador actualizado con éxito",
+            false,
+            "/encuestadores"
+          )
+        );
+      })
+      .catch(error => {
+        dispatch(notification(error.response.data.error, true));
+      });
   };
 };
 
@@ -48,52 +96,7 @@ export const deletePollster = id => {
       })
       .catch(error => {
         dispatch(cleanLoading());
-        console.log(error.response);
-        dispatch(
-          notification(error.response.data.error, true, "/encuestadores")
-        );
-      });
-  };
-};
-
-export const savePollster = pollster => {
-  return dispatch => {
-    dispatch(loading());
-
-    console.log(pollster);
-    axiosInstance
-      .post("/pollsters", pollster, {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-          "content-type": "multipart/form-data"
-        }
-      })
-      .then(response => {
-        dispatch(cleanLoading());
-        dispatch(notification("Usuario creado con éxito", false, "/usuarios"));
-      })
-      .catch(error => {
-        dispatch(cleanLoading());
-
-        if (
-          error.response.data.error.name === "SequelizeUniqueConstraintError"
-        ) {
-          dispatch(
-            notification(
-              "Ya existe un usuario con ese correo",
-              true,
-              "/usuarios/nuevo"
-            )
-          );
-        } else {
-          dispatch(
-            notification(
-              "Hubo un error, por favor comuníquese con el administrador del sistema",
-              true,
-              "/usuarios/nuevo"
-            )
-          );
-        }
+        dispatch(notification(error.response.data.err, true, "/encuestadores"));
       });
   };
 };

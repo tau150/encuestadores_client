@@ -104,7 +104,6 @@ class PollsIndex extends PureComponent {
         dataField: "id",
         text: "Acciones",
         headerClasses: "datatable-actions",
-
         formatter: actionsFormatter
       }
     ];

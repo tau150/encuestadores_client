@@ -8,7 +8,11 @@ import LayoutSimple from "./components/LayoutSimple";
 import UsersIndex from "./containers/UsersIndex";
 import EditUser from "./containers/EditUser";
 import NewUser from "./containers/NewUser";
-import { authCheckState, logout } from "./store/actions/authActions";
+import {
+  authCheckState,
+  logout,
+  checkAuthTimeout
+} from "./store/actions/authActions";
 import { cleanNotification } from "./store/actions/notificationsActions";
 import Loading from "./components/Loading";
 import ChangePassword from "./containers/ChangePassword";
@@ -17,6 +21,7 @@ import NewPoll from "./containers/NewPoll";
 import EditPoll from "./containers/EditPoll";
 import PollstersIndex from "./containers/PollstersIndex";
 import NewPollster from "./containers/NewPollster";
+import EditPollster from "./containers/EditPollster";
 
 class AppRouted extends Component {
   componentWillReceiveProps(nextProps) {
@@ -39,8 +44,16 @@ class AppRouted extends Component {
     this.props.logout();
   };
 
+  componentDidUpdate() {
+    this.props.checkAuthTimeout();
+  }
+
   render() {
     let routes;
+
+    if (!localStorage.getItem("token")) {
+      this.props.logout();
+    }
 
     if (this.props.user.role_id === 1) {
       routes = (
@@ -55,6 +68,7 @@ class AppRouted extends Component {
           <Route path="/encuestas/:id" exact component={EditPoll} />
           <Route path="/encuestadores" exact component={PollstersIndex} />
           <Route path="/encuestadores/nuevo" exact component={NewPollster} />
+          <Route path="/encuestadores/:id" exact component={EditPollster} />
           <Redirect to="/" />
         </Switch>
       );
@@ -99,6 +113,6 @@ const mapStateToProps = state => {
 export default withRouter(
   connect(
     mapStateToProps,
-    { authCheckState, logout, cleanNotification }
+    { authCheckState, logout, cleanNotification, checkAuthTimeout }
   )(AppRouted)
 );

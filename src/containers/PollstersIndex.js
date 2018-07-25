@@ -11,11 +11,14 @@ import {
 } from "../store/actions/pollstersActions";
 
 import {
-  actionsFormatter,
   imageFormatter,
   citiesFormatter,
   activeFormatter
 } from "../utils/util";
+
+const ContainerIcons = styled.div`
+  cursor: pointer;
+`;
 
 class PolltersIndex extends PureComponent {
   state = {
@@ -31,6 +34,7 @@ class PolltersIndex extends PureComponent {
 
   handleEdit = e => {
     const id = e.target.getAttribute("data-id");
+    console.log(id);
     this.props.history.push("/encuestadores/" + id);
   };
 
@@ -54,7 +58,27 @@ class PolltersIndex extends PureComponent {
   render() {
     if (!this.props.allPollsters) return null;
 
-    // const headerSortingStyle = { color: "red" };
+    const actionsFormatter = (cell, row, rowIndex) => {
+      return (
+        <ContainerIcons className="d-flex justify-content-around align-items-center">
+          <i
+            data-id={row.id}
+            className="material-icons text-info rounded-icon"
+            onClick={this.handleEdit}
+          >
+            edit
+          </i>
+
+          <i
+            data-id={row.id}
+            onClick={this.handleDeleteConfirm}
+            className="material-icons text-danger"
+          >
+            delete
+          </i>
+        </ContainerIcons>
+      );
+    };
 
     const pollsters = this.props.allPollsters;
     const columns = [
@@ -104,7 +128,6 @@ class PolltersIndex extends PureComponent {
         dataField: "id",
         text: "Acciones",
         headerClasses: "datatable-actions",
-
         formatter: actionsFormatter
       }
     ];

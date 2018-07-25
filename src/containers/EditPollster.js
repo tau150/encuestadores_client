@@ -2,12 +2,28 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import GridCard from "../components/GridCard";
 import PollsterForm from "../components/PollsterForm";
-import { savePollster } from "../store/actions/pollstersActions";
+import { updatePollster } from "../store/actions/pollstersActions";
 import { getCities } from "../store/actions/citiesActions";
 import { getPolls } from "../store/actions/pollsActions";
 
-class NewPollster extends Component {
-  handleSave = pollster => {
+class EditPollster extends Component {
+  state = {
+    pollsterId: this.props.match.params.id,
+    pollster: null
+  };
+
+  componentDidMount() {
+    this.props.getCities();
+    this.props.getPolls();
+
+    const pollster = this.props.allPollsters.find(pollster => {
+      return String(pollster.id) === String(this.props.match.params.id);
+    });
+
+    this.setState({ pollster });
+  }
+
+  handleEdit = pollster => {
     let formData = new FormData();
     console.log(pollster);
     formData.append("name", pollster.name);
@@ -19,25 +35,21 @@ class NewPollster extends Component {
     formData.append("poll", pollster.poll);
     formData.append("avatar", pollster.img);
 
-    this.props.savePollster(formData);
+    this.props.updatePollster(formData, pollster.pollsterId);
   };
 
-  componentDidMount() {
-    this.props.getCities();
-    this.props.getPolls();
-  }
-
   render() {
-    if (!this.props.allCities || !this.props.allPolls) return null;
+    if (!this.state.pollster || !this.props.allCities || !this.props.allPolls)
+      return null;
 
     return (
-      <GridCard title={"Encuestador"} subTitle={"Creación de Encuestador"}>
+      <GridCard title={"Encuestador"} subTitle={"Edición de Encuestador"}>
         <PollsterForm
-          userId={null}
+          pollster={this.state.pollster}
+          pollsterId={this.state.pollsterId}
           cities={this.props.allCities}
           polls={this.props.allPolls}
-          handleAction={this.handleSave}
-          allowNew={false}
+          handleAction={this.handleEdit}
         />
       </GridCard>
     );
@@ -46,12 +58,12 @@ class NewPollster extends Component {
 
 const mapStateToProps = state => {
   return {
+    allPollsters: state.pollsters.pollsters,
     allCities: state.cities.cities,
     allPolls: state.polls.polls
   };
 };
-
 export default connect(
   mapStateToProps,
-  { savePollster, getCities, getPolls }
-)(NewPollster);
+  { updatePollster, getCities, getPolls }
+)(EditPollster);

@@ -124,3 +124,10 @@ a {
   border-radius: 50%;
   box-shadow: 10px 10px 41px -11px rgba(0, 0, 0, 0.75);
 }
+
+.multiselect > div:first-child {
+  background: none !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.26) !important;
+  border-radius: 0 !important;
+}

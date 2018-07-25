@@ -43,7 +43,7 @@ export const actionsFormatter = (cell, row, rowIndex) => {
 export const imageFormatter = (cell, row, rowIndex) => {
   return (
     <ContainerProfileImg>
-      <img src={cell} className="img-fluid img-perfil-grid" />
+      <img src={cell} className="img-fluid img-perfil-grid" alt="" />
     </ContainerProfileImg>
   );
 };
@@ -60,7 +60,7 @@ export const citiesFormatter = (cell, row, rowIndex) => {
 
 export const activeFormatter = (cell, row, rowIndex) => {
   const icon =
-    cell === 1 ? (
+    cell === true ? (
       <i className="material-icons text-center text-success">
         check_circle_outline
       </i>
