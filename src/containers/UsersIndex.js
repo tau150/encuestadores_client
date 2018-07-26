@@ -6,28 +6,13 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import SweetAlert from "sweetalert2-react";
 import GridCard from "../components/GridCard";
 import { getUsers, deleteUser } from "../store/actions/usersActions";
-
-const ContainerIcons = styled.div`
-  cursor: pointer;
-`;
+import ActionsFormatter2 from "../hoc/ActionsFormatter2";
 
 class UsersIndex extends PureComponent {
   state = {
     showSwal: false,
     idToDelete: null
   };
-
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   if (this.props.allUsers !== nextProps.allUsers) {
-  //     return true;
-  //   }
-  //   if (this.state.showSwal !== nextState.showSwal) {
-  //     return true;
-  //   }
-
-  //   return false;
-  // }
-
   componentDidMount() {
     if (this.props.allUsers === null) {
       this.props.getUsers();
@@ -61,28 +46,6 @@ class UsersIndex extends PureComponent {
 
     // const headerSortingStyle = { color: "red" };
 
-    const actionsFormatter = (cell, row, rowIndex) => {
-      return (
-        <ContainerIcons className="d-flex justify-content-around align-items-center">
-          <i
-            data-id={row.id}
-            className="material-icons text-info rounded-icon"
-            onClick={this.handleEdit}
-          >
-            edit
-          </i>
-
-          <i
-            data-id={row.id}
-            onClick={this.handleDeleteConfirm}
-            className="material-icons text-danger"
-          >
-            delete
-          </i>
-        </ContainerIcons>
-      );
-    };
-
     const users = this.props.allUsers;
     const columns = [
       {
@@ -114,7 +77,7 @@ class UsersIndex extends PureComponent {
         dataField: "id",
         text: "Acciones",
         headerClasses: "datatable-actions",
-        formatter: actionsFormatter
+        formatter: this.props.actionsFormatter
       }
     ];
 
@@ -127,7 +90,7 @@ class UsersIndex extends PureComponent {
           allowNew={true}
         >
           <SweetAlert
-            show={this.state.showSwal}
+            show={this.props.showSwal}
             title="Eliminará el registro"
             text="¿Está seguro de eliminar?"
             type="warning"
@@ -156,7 +119,9 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { getUsers, deleteUser }
-)(UsersIndex);
+export default ActionsFormatter2(
+  connect(
+    mapStateToProps,
+    { getUsers, deleteUser }
+  )(UsersIndex)
+);

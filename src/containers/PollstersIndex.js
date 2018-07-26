@@ -1,24 +1,19 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
+import { compose } from "recompose";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import SweetAlert from "sweetalert2-react";
 import GridCard from "../components/GridCard";
+import ImageFormatter from "../hoc/ImageFormatter";
+import ActiveFormatter from "../hoc/ActiveFormatter";
+import ListFormatter from "../hoc/ListFormatter";
+import ActionsFormatter from "../hoc/ActionsFormatter";
 import {
   getPollsters,
   deletePollster
 } from "../store/actions/pollstersActions";
-
-import {
-  imageFormatter,
-  citiesFormatter,
-  activeFormatter
-} from "../utils/util";
-
-const ContainerIcons = styled.div`
-  cursor: pointer;
-`;
 
 class PolltersIndex extends PureComponent {
   state = {
@@ -32,11 +27,10 @@ class PolltersIndex extends PureComponent {
     }
   }
 
-  handleEdit = e => {
-    const id = e.target.getAttribute("data-id");
-    console.log(id);
-    this.props.history.push("/encuestadores/" + id);
-  };
+  // handleEdit = e => {
+  //   const id = e.target.getAttribute("data-id");
+  //   this.props.history.push("/encuestadores/" + id);
+  // };
 
   handleDelete = () => {
     this.props.deletePollster(this.state.idToDelete);
@@ -46,10 +40,10 @@ class PolltersIndex extends PureComponent {
     });
   };
 
-  handleDeleteConfirm = e => {
-    const id = e.target.getAttribute("data-id");
-    this.setState({ showSwal: true, idToDelete: id });
-  };
+  // handleDeleteConfirm = e => {
+  //   const id = e.target.getAttribute("data-id");
+  //   this.setState({ showSwal: true, idToDelete: id });
+  // };
 
   handleCancel = () => {
     this.setState({ showSwal: false, idToDelete: null });
@@ -57,28 +51,6 @@ class PolltersIndex extends PureComponent {
 
   render() {
     if (!this.props.allPollsters) return null;
-
-    const actionsFormatter = (cell, row, rowIndex) => {
-      return (
-        <ContainerIcons className="d-flex justify-content-around align-items-center">
-          <i
-            data-id={row.id}
-            className="material-icons text-info rounded-icon"
-            onClick={this.handleEdit}
-          >
-            edit
-          </i>
-
-          <i
-            data-id={row.id}
-            onClick={this.handleDeleteConfirm}
-            className="material-icons text-danger"
-          >
-            delete
-          </i>
-        </ContainerIcons>
-      );
-    };
 
     const pollsters = this.props.allPollsters;
     const columns = [
@@ -90,7 +62,7 @@ class PolltersIndex extends PureComponent {
       {
         dataField: "img",
         text: "Perfil",
-        formatter: imageFormatter
+        formatter: this.props.imgFormatter
       },
       {
         dataField: "name",
@@ -117,18 +89,18 @@ class PolltersIndex extends PureComponent {
         headerClasses: "datatable-sortable",
         text: "Activo",
         sort: true,
-        formatter: activeFormatter
+        formatter: this.props.activeFormatter
       },
       {
         dataField: "cities",
         text: "Localidad",
-        formatter: citiesFormatter
+        formatter: this.props.listFormatter
       },
       {
         dataField: "id",
         text: "Acciones",
         headerClasses: "datatable-actions",
-        formatter: actionsFormatter
+        formatter: this.props.actionsFormatter
       }
     ];
 
@@ -171,7 +143,21 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { getPollsters, deletePollster }
-)(PolltersIndex);
+const enhance = compose(
+  ImageFormatter,
+  ListFormatter,
+  ActiveFormatter,
+  ActionsFormatter("encuestadores"),
+  connect(
+    mapStateToProps,
+    { getPollsters, deletePollster }
+  )
+);
+export default enhance(PolltersIndex);
+
+// export default imageFormatter(
+//   connect(
+//     mapStateToProps,
+//     { getPollsters, deletePollster }
+//   )(PolltersIndex)
+// );
