@@ -1,50 +1,24 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
-import styled from "styled-components";
+import { compose } from "recompose";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import SweetAlert from "sweetalert2-react";
 import GridCard from "../components/GridCard";
-import { getUsers, deleteUser } from "../store/actions/usersActions";
-import ActionsFormatter2 from "../hoc/ActionsFormatter2";
+import { getUsers } from "../store/actions/usersActions";
+import ActionsFormatter from "../hoc/ActionsFormatter";
+import ActiveFormatter from "../hoc/ActiveFormatter";
+import ListFormatter from "../hoc/ListFormatter";
 
 class UsersIndex extends PureComponent {
-  state = {
-    showSwal: false,
-    idToDelete: null
-  };
   componentDidMount() {
     if (this.props.allUsers === null) {
       this.props.getUsers();
     }
   }
 
-  handleEdit = e => {
-    const id = e.target.getAttribute("data-id");
-    this.props.history.push("/usuarios/" + id);
-  };
-
-  handleDelete = () => {
-    this.props.deleteUser(this.state.idToDelete);
-    this.setState({
-      showSwal: false,
-      idToDelete: null
-    });
-  };
-
-  handleDeleteConfirm = e => {
-    const id = e.target.getAttribute("data-id");
-    this.setState({ showSwal: true, idToDelete: id });
-  };
-
-  handleCancel = () => {
-    this.setState({ showSwal: false, idToDelete: null });
-  };
-
   render() {
     if (!this.props.allUsers) return null;
-
-    // const headerSortingStyle = { color: "red" };
 
     const users = this.props.allUsers;
     const columns = [
@@ -97,8 +71,8 @@ class UsersIndex extends PureComponent {
             showCancelButton
             confirmButtonText="Sí, eliminar!"
             cancelButtonText="Cancelar"
-            onConfirm={this.handleDelete}
-            onCancel={this.handleCancel}
+            onConfirm={this.props.handleDelete}
+            onCancel={this.props.handleCancel}
           />
           <BootstrapTable
             keyField={"id"}
@@ -119,9 +93,13 @@ const mapStateToProps = state => {
   };
 };
 
-export default ActionsFormatter2(
+const enhance = compose(
+  ListFormatter,
+  ActiveFormatter,
+  ActionsFormatter("usuarios"),
   connect(
     mapStateToProps,
-    { getUsers, deleteUser }
-  )(UsersIndex)
+    { getUsers }
+  )
 );
+export default enhance(UsersIndex);

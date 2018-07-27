@@ -3,10 +3,11 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 // import Loading from "../components/Loading";
 import { cleanNotification } from "../store/actions/notificationsActions";
+
 // import Notifications from "react-notify-toast";
 // import { notify } from "react-notify-toast";
 import { HashRouter } from "react-router-dom";
-
+import Loading from "../components/Loading";
 import Login from "../containers/Login";
 import { authCheckState, logout } from "../store/actions/authActions";
 import AppRouted from "../AppRouted";
@@ -21,6 +22,7 @@ class MainRouter extends Component {
 
     return (
       <div>
+        <Loading open={this.props.loading} />
         <HashRouter>{routes}</HashRouter>
         {/* <Notifications options={{ zIndex: 200 }} /> */}
       </div>

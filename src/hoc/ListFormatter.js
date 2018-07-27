@@ -2,8 +2,12 @@ import React from "react";
 import styled from "styled-components";
 
 const StyledUl = styled.ul`
+  margin-left: 0;
+  padding-left: 5px;
+
   li {
-    font-size: 0.9rem;
+    font-size: 0.7rem;
+    text-transform: capitalize;
     margin-top: 10px;
   }
 `;
@@ -18,7 +22,7 @@ const ListFormatter = WrappedComponent => {
 
         return (
           <StyledUl>
-            {elements.map(element => <li key={element}> {element} </li>)}
+            {elements.map(element => <li key={element}>{element} </li>)}
           </StyledUl>
         );
       };

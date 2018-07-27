@@ -4,50 +4,21 @@ import styled from "styled-components";
 import { compose } from "recompose";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
+import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import SweetAlert from "sweetalert2-react";
 import GridCard from "../components/GridCard";
 import ImageFormatter from "../hoc/ImageFormatter";
 import ActiveFormatter from "../hoc/ActiveFormatter";
 import ListFormatter from "../hoc/ListFormatter";
 import ActionsFormatter from "../hoc/ActionsFormatter";
-import {
-  getPollsters,
-  deletePollster
-} from "../store/actions/pollstersActions";
+import { getPollsters } from "../store/actions/pollstersActions";
 
 class PolltersIndex extends PureComponent {
-  state = {
-    showSwal: false,
-    idToDelete: null
-  };
-
   componentDidMount() {
     if (this.props.allPollsters === null) {
       this.props.getPollsters();
     }
   }
-
-  // handleEdit = e => {
-  //   const id = e.target.getAttribute("data-id");
-  //   this.props.history.push("/encuestadores/" + id);
-  // };
-
-  handleDelete = () => {
-    this.props.deletePollster(this.state.idToDelete);
-    this.setState({
-      showSwal: false,
-      idToDelete: null
-    });
-  };
-
-  // handleDeleteConfirm = e => {
-  //   const id = e.target.getAttribute("data-id");
-  //   this.setState({ showSwal: true, idToDelete: id });
-  // };
-
-  handleCancel = () => {
-    this.setState({ showSwal: false, idToDelete: null });
-  };
 
   render() {
     if (!this.props.allPollsters) return null;
@@ -68,21 +39,41 @@ class PolltersIndex extends PureComponent {
         dataField: "name",
         text: "Nombre",
         headerClasses: "datatable-sortable",
-        sort: true
+        sort: true,
+        filter: textFilter({
+          className: "search-datatable",
+          placeholder: "Buscar"
+        })
       },
       {
         dataField: "surname",
         text: "Apellido",
         headerClasses: "datatable-sortable",
-        sort: true
+        sort: true,
+        filter: textFilter({
+          className: "search-datatable",
+          placeholder: "Buscar"
+        })
       },
       {
         dataField: "dni",
-        text: "DNI"
+        text: "DNI",
+        filter: textFilter({
+          className: "search-datatable",
+          placeholder: "Buscar.."
+        })
+      },
+      {
+        dataField: "jobPosition",
+        text: "Cargo",
+        headerClasses: "datatable-sortable",
+        sort: true
       },
       {
         dataField: "Poll.name",
-        text: "Encuesta"
+        text: "Encuesta",
+        headerClasses: "datatable-sortable",
+        sort: true
       },
       {
         dataField: "active",
@@ -113,14 +104,14 @@ class PolltersIndex extends PureComponent {
           allowNew={true}
         >
           <SweetAlert
-            show={this.state.showSwal}
+            show={this.props.showSwal}
             title="Eliminará el registro"
             text="¿Está seguro de eliminar?"
             type="warning"
             showCancelButton
             confirmButtonText="Sí, eliminar!"
             cancelButtonText="Cancelar"
-            onConfirm={this.handleDelete}
+            onConfirm={this.props.handleDelete}
             onCancel={this.handleCancel}
           />
           <BootstrapTable
@@ -129,6 +120,7 @@ class PolltersIndex extends PureComponent {
             data={pollsters}
             columns={columns}
             pagination={paginationFactory()}
+            filter={filterFactory()}
           />
         </GridCard>
       </div>
@@ -150,7 +142,7 @@ const enhance = compose(
   ActionsFormatter("encuestadores"),
   connect(
     mapStateToProps,
-    { getPollsters, deletePollster }
+    { getPollsters }
   )
 );
 export default enhance(PolltersIndex);

@@ -58,7 +58,6 @@ class AppRouted extends Component {
     if (this.props.user.role_id === 1) {
       routes = (
         <Switch>
-          <Route path="/" exact component={Home} />
           <Route path="/usuarios" exact component={UsersIndex} />
           <Route path="/usuarios/nuevo" exact component={NewUser} />
           <Route path="/usuarios/:id" component={EditUser} />
@@ -69,18 +68,30 @@ class AppRouted extends Component {
           <Route path="/encuestadores" exact component={PollstersIndex} />
           <Route path="/encuestadores/nuevo" exact component={NewPollster} />
           <Route path="/encuestadores/:id" exact component={EditPollster} />
-          <Redirect to="/" />
+          <Redirect to="/encuestadores" />
+        </Switch>
+      );
+    } else if (this.props.user.role_id === 2) {
+      routes = (
+        <Switch>
+          <Route path="/cambiarClave" exact component={ChangePassword} />
+          <Route path="/encuestas" exact component={PollsIndex} />
+          <Route path="/encuestas/nuevo" exact component={NewPoll} />
+          <Route path="/encuestas/:id" exact component={EditPoll} />
+          <Route path="/encuestadores" exact component={PollstersIndex} />
+          <Route path="/encuestadores/nuevo" exact component={NewPollster} />
+          <Route path="/encuestadores/:id" exact component={EditPollster} />
+          <Redirect to="/encuestadores" />
         </Switch>
       );
     } else {
-      routes = (
-        <Switch>
-          <Route path="/test" component={Home} />
-          <Route path="/cambiarClave" exact component={ChangePassword} />
-          <Route path="/" exact component={Home} />
-          <Redirect to="/" />
-        </Switch>
-      );
+      <Switch>
+        <Route path="/encuestadores/nuevo" exact component={NewPollster} />
+        <Route path="/encuestadores/:id" exact component={EditPollster} />
+        <Redirect to="/encuestadores" />
+        <Route path="/cambiarClave" exact component={ChangePassword} />
+        <Redirect to="/encuestadores" />
+      </Switch>;
     }
 
     return (

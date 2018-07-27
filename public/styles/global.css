@@ -85,7 +85,7 @@ a {
   text-decoration: none;
 }
 
-.datatable-sortable::after {
+.datatable-sortable::before {
   font-family: "Material Icons";
   content: "sort";
   font-weight: bold;
@@ -93,8 +93,9 @@ a {
   padding: 3px;
   margin: 5px;
   font-feature-settings: "liga" 1;
-  border: 1px solid #777;
-  border-radius: 50%;
+  font-size: 0.6rem;
+  /* border: 1px solid #777;
+  border-radius: 50%; */
 }
 
 .datatable-actions {
@@ -110,13 +111,13 @@ a {
 }
 
 .img-perfil-grid {
-  width: 80px;
+  width: 80px !important;
   border-radius: 50%;
 }
 
 .react-bootstrap-table tr td {
   vertical-align: middle;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
 }
 
 .img-perfil-profile {

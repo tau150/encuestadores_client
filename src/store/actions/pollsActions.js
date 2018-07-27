@@ -40,7 +40,7 @@ export const deletePoll = id => {
       );
     } catch (error) {
       dispatch(cleanLoading());
-      dispatch(notification(error.response.data.err, true, "/encuestas"));
+      dispatch(notification(error.response.data.error, true, "/encuestas"));
     }
   };
 };

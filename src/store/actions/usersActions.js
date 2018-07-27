@@ -108,12 +108,9 @@ export const saveUser = user => {
         dispatch(notification("Usuario creado con éxito", false, "/usuarios"));
       })
       .catch(error => {
-        console.log(error.response);
         dispatch(cleanLoading());
 
-        if (
-          error.response.data.error.name === "SequelizeUniqueConstraintError"
-        ) {
+        if (error.response.data.error === "Validation Error") {
           dispatch(
             notification(
               "Ya existe un usuario con ese correo",

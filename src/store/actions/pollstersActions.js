@@ -1,11 +1,26 @@
 import axiosInstance from "../../axios";
 import { notification, loading, cleanLoading } from "./notificationsActions";
 export const GET_POLLSTERS_SUCCESS = "GET_POLLSTERS_SUCCESS";
+export const GET_POLLSTER_SUCCESS = "GET_POLLSTER_SUCCESS";
+export const CLEAN_POLLSTER = "CLEAN_POLLSTER";
 
-export const getPollsSuccess = pollsters => {
+export const getPollstersSuccess = pollsters => {
   return {
     type: GET_POLLSTERS_SUCCESS,
     pollsters
+  };
+};
+
+export const getPollsterSuccess = pollster => {
+  return {
+    type: GET_POLLSTER_SUCCESS,
+    pollster
+  };
+};
+
+export const cleanPollster = () => {
+  return {
+    type: CLEAN_POLLSTER
   };
 };
 
@@ -19,7 +34,7 @@ export const getPollsters = () => {
       });
 
       dispatch(cleanLoading());
-      dispatch(getPollsSuccess(response.data.pollsters));
+      dispatch(getPollstersSuccess(response.data.pollsters));
     } catch (e) {
       dispatch(cleanLoading());
       dispatch(notification(e.response.data.err, true, "/encuestadores"));
@@ -98,5 +113,23 @@ export const deletePollster = id => {
         dispatch(cleanLoading());
         dispatch(notification(error.response.data.err, true, "/encuestadores"));
       });
+  };
+};
+
+export const getPollster = id => {
+  return async dispatch => {
+    dispatch(loading());
+
+    try {
+      const response = await axiosInstance.get(`/pollsters/${id}`, {
+        headers: { Authorization: localStorage.getItem("token") }
+      });
+
+      dispatch(getPollsterSuccess(response.data.pollster));
+      dispatch(cleanLoading());
+    } catch (e) {
+      dispatch(cleanLoading());
+      dispatch(notification(e.response.data.err, true, "/encuestadores"));
+    }
   };
 };

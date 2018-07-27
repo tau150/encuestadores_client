@@ -201,15 +201,16 @@ class PollsterForm extends Component {
             {this.validator.message(
               "dni",
               this.state.dni,
-              "required",
+              "required|min:7|max:8",
               "text-danger",
               {
-                required: "El DNI es obligatorio"
+                required: "El DNI es obligatorio",
+                min: "El DNI debe contener entre 7 y 8 dígitos"
               }
             )}
           </FormGroup>
 
-          <FormGroup className="col-md-4">
+          <FormGroup className="col-md-6">
             <Label for="description">Cargo</Label>
             <Input
               type="select"
@@ -239,46 +240,7 @@ class PollsterForm extends Component {
             )}
           </FormGroup>
 
-          <FormGroup className="col-md-4">
-            <Label for="description">Ciudad / es</Label>
-            {/* <Input
-              type="select"
-              name="cities"
-              id="cities"
-              onChange={this.setStateFromInputArray}
-              value={this.state.city}
-            >
-              <option selected>Seleccione una opción</option>
-              {this.props.cities.map(city => (
-                <option key={city.id} value={city.id}>
-                  {city.city}
-                </option>
-              ))}
-            </Input> */}
-
-            <Select
-              value={this.state.cities}
-              onChange={this.handleChangeMulti}
-              options={cities}
-              name="cities"
-              isMulti
-              className="multiselect"
-              isSearchable
-              placeholder="Seleccione alguna opción"
-            />
-
-            {this.validator.message(
-              "cities",
-              this.state.cities,
-              "required",
-              "text-danger",
-              {
-                required: "Debe seleccionar una opción"
-              }
-            )}
-          </FormGroup>
-
-          <FormGroup className="col-md-4">
+          <FormGroup className="col-md-6">
             <Label for="description">Encuesta</Label>
             <Input
               type="select"
@@ -305,6 +267,31 @@ class PollsterForm extends Component {
               }
             )}
           </FormGroup>
+
+          <FormGroup className="col-12">
+            <Label for="description">Ciudad / es</Label>
+
+            <Select
+              value={this.state.cities}
+              onChange={this.handleChangeMulti}
+              options={cities}
+              name="cities"
+              isMulti
+              className="multiselect"
+              isSearchable
+              placeholder="Seleccione alguna opción"
+            />
+
+            {this.validator.message(
+              "cities",
+              this.state.cities,
+              "required",
+              "text-danger",
+              {
+                required: "Debe seleccionar una opción"
+              }
+            )}
+          </FormGroup>
         </div>
         <div className="row d-flex justify-content-center mt-3">
           <Button
@@ -312,7 +299,7 @@ class PollsterForm extends Component {
             s
             onClick={this.handleSubmit}
           >
-            {this.state.pollsterId !== "" ? "Guardar" : "Crear"}
+            {this.state.pollsterId !== "true" ? "Guardar" : "Crear"}
           </Button>
         </div>
       </Form>

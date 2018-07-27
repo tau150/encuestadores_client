@@ -28,6 +28,7 @@ const StyledBackDrop = styled.div`
   position: absolute;
   width: 100vw;
   height: 100vh;
+  min-height: 100vh;
   z-index: 4000;
   display: flex;
   align-items: center;

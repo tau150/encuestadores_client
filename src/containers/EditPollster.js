@@ -5,27 +5,31 @@ import PollsterForm from "../components/PollsterForm";
 import { updatePollster } from "../store/actions/pollstersActions";
 import { getCities } from "../store/actions/citiesActions";
 import { getPolls } from "../store/actions/pollsActions";
+import { getPollster, cleanPollster } from "../store/actions/pollstersActions";
 
 class EditPollster extends Component {
   state = {
-    pollsterId: this.props.match.params.id,
-    pollster: null
+    pollsterId: this.props.match.params.id
   };
 
   componentDidMount() {
     this.props.getCities();
     this.props.getPolls();
+    this.props.getPollster(this.props.match.params.id);
 
-    const pollster = this.props.allPollsters.find(pollster => {
-      return String(pollster.id) === String(this.props.match.params.id);
-    });
+    // const pollster = this.props.allPollsters.find(pollster => {
+    //   return String(pollster.id) === String(this.props.match.params.id);
+    // });
 
-    this.setState({ pollster });
+    // this.setState({ pollster });
+  }
+
+  componentWillUnmount() {
+    this.props.cleanPollster();
   }
 
   handleEdit = pollster => {
     let formData = new FormData();
-    console.log(pollster);
     formData.append("name", pollster.name);
     formData.append("surname", pollster.surname);
     formData.append("dni", pollster.dni);
@@ -39,13 +43,13 @@ class EditPollster extends Component {
   };
 
   render() {
-    if (!this.state.pollster || !this.props.allCities || !this.props.allPolls)
+    if (!this.props.pollster || !this.props.allCities || !this.props.allPolls)
       return null;
 
     return (
       <GridCard title={"Encuestador"} subTitle={"Edición de Encuestador"}>
         <PollsterForm
-          pollster={this.state.pollster}
+          pollster={this.props.pollster}
           pollsterId={this.state.pollsterId}
           cities={this.props.allCities}
           polls={this.props.allPolls}
@@ -60,10 +64,11 @@ const mapStateToProps = state => {
   return {
     allPollsters: state.pollsters.pollsters,
     allCities: state.cities.cities,
-    allPolls: state.polls.polls
+    allPolls: state.polls.polls,
+    pollster: state.pollsters.pollster
   };
 };
 export default connect(
   mapStateToProps,
-  { updatePollster, getCities, getPolls }
+  { updatePollster, getCities, getPolls, getPollster, cleanPollster }
 )(EditPollster);

@@ -1,87 +1,24 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
-import styled from "styled-components";
+import { compose } from "recompose";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import SweetAlert from "sweetalert2-react";
 import GridCard from "../components/GridCard";
-import { getPolls, deletePoll } from "../store/actions/pollsActions";
-
-const ContainerIcons = styled.div`
-  cursor: pointer;
-`;
+import { getPolls } from "../store/actions/pollsActions";
+import ActionsFormatter from "../hoc/ActionsFormatter";
+import ActiveFormatter from "../hoc/ActiveFormatter";
+import ListFormatter from "../hoc/ListFormatter";
 
 class PollsIndex extends PureComponent {
-  state = {
-    showSwal: false,
-    idToDelete: null
-  };
-
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   if (this.props.allPolls !== nextProps.allPolls) {
-  //     return true;
-  //   }
-  //   if (this.state.showSwal !== nextState.showSwal) {
-  //     return true;
-  //   }
-
-  //   return false;
-  // }
-
   componentDidMount() {
     if (this.props.allPolls === null) {
       this.props.getPolls();
     }
   }
 
-  handleEdit = e => {
-    const id = e.target.getAttribute("data-id");
-    this.props.history.push("/encuestas/" + id);
-  };
-
-  handleDelete = () => {
-    this.props.deletePoll(this.state.idToDelete);
-    this.setState({
-      showSwal: false,
-      idToDelete: null
-    });
-  };
-
-  handleDeleteConfirm = e => {
-    const id = e.target.getAttribute("data-id");
-    this.setState({ showSwal: true, idToDelete: id });
-  };
-
-  handleCancel = () => {
-    this.setState({ showSwal: false, idToDelete: null });
-  };
-
   render() {
     if (!this.props.allPolls) return null;
-
-    // const headerSortingStyle = { color: "red" };
-
-    const actionsFormatter = (cell, row, rowIndex) => {
-      return (
-        <ContainerIcons className="d-flex justify-content-around align-items-center">
-          <i
-            data-id={row.id}
-            className="material-icons text-info rounded-icon"
-            onClick={this.handleEdit}
-          >
-            edit
-          </i>
-
-          <i
-            data-id={row.id}
-            onClick={this.handleDeleteConfirm}
-            className="material-icons text-danger"
-          >
-            delete
-          </i>
-        </ContainerIcons>
-      );
-    };
 
     const polls = this.props.allPolls;
     const columns = [
@@ -104,7 +41,7 @@ class PollsIndex extends PureComponent {
         dataField: "id",
         text: "Acciones",
         headerClasses: "datatable-actions",
-        formatter: actionsFormatter
+        formatter: this.props.actionsFormatter
       }
     ];
 
@@ -117,15 +54,15 @@ class PollsIndex extends PureComponent {
           allowNew={true}
         >
           <SweetAlert
-            show={this.state.showSwal}
+            show={this.props.showSwal}
             title="Eliminará el registro"
             text="¿Está seguro de eliminar?"
             type="warning"
             showCancelButton
             confirmButtonText="Sí, eliminar!"
             cancelButtonText="Cancelar"
-            onConfirm={this.handleDelete}
-            onCancel={this.handleCancel}
+            onConfirm={this.props.handleDelete}
+            onCancel={this.props.handleCancel}
           />
           <BootstrapTable
             keyField={"id"}
@@ -146,7 +83,13 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { getPolls, deletePoll }
-)(PollsIndex);
+const enhance = compose(
+  ListFormatter,
+  ActiveFormatter,
+  ActionsFormatter("encuestas"),
+  connect(
+    mapStateToProps,
+    { getPolls }
+  )
+);
+export default enhance(PollsIndex);
